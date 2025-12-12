@@ -16,6 +16,7 @@ datasources/00_National_Data_Sets.json
 /terriajs.pid
 /terriajs-server.log
 devserverconfig.json
+serverconfig.json
 productionserverconfig.json
 /wwwroot/editor/
 /error.log

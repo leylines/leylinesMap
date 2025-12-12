@@ -14,7 +14,7 @@
     ]
   },
   "name": "leylinesjs-map",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Geospatial catalog explorer based on TerriaJS.",
   "license": "Apache-2.0",
   "engines": {
@@ -76,7 +76,7 @@
     "style-loader": "^4.0.0",
     "svg-sprite": "^2.0.4",
     "terriajs": "https://github.com/leylines/terriajs#main",
-    "terriajs-cesium": "21.0.0",
+    "terriajs-cesium": "21.0.1",
     "terriajs-plugin-api": "https://github.com/leylines/plugin-api",
     "terriajs-plugin-sample": "https://github.com/leylines/plugin-sample",
     "typescript": "^5.9.2",

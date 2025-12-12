@@ -89,6 +89,9 @@ gulp.task("link-config", function (done) {
   src("../leylines-config/leylines.json").pipe(
     symlink("./wwwroot/init", { dirMode: false, overwrite: true })
   );
+  src("../leylines-config/leylines-stripped.json").pipe(
+    symlink("./wwwroot/init", { dirMode: false, overwrite: true })
+  );
   src("../leylines-config/config.json").pipe(
     symlink("./wwwroot", { dirMode: false, overwrite: true })
   );
