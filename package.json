@@ -5,16 +5,15 @@
       "packages/terriajs",
       "packages/terriajs-cesium/packages/engine",
       "packages/terriajs-cesium/packages/widgets",
-      "packages/terriajs-server",
-      "packages/leylinesjs-server",
+      "packages/leylines-server",
       "packages/plugin-sample"
     ],
     "nohoist": [
       "**/husky"
     ]
   },
-  "name": "leylinesjs-map",
-  "version": "0.4.4",
+  "name": "leylines-map",
+  "version": "0.4.5",
   "description": "Geospatial catalog explorer based on TerriaJS.",
   "license": "Apache-2.0",
   "engines": {
@@ -25,7 +24,7 @@
     "url": "https://github.com/leylines/leylinesMap"
   },
   "dependencies": {
-    "leylinesjs-server": "https://github.com/leylines/leylinesjs-server"
+    "leylines-server": "https://github.com/leylines/leylines-server"
   },
   "config": {
     "docker": {
@@ -54,7 +53,7 @@
     "fork-ts-checker-notifier-webpack-plugin": "^9.0.0",
     "fork-ts-checker-webpack-plugin": "^9.0.2",
     "fs-extra": "^7.0.1",
-    "gulp": "^5.0.0",
+    "gulp": "^5.0.1",
     "html-webpack-plugin": "^5.6.3",
     "husky": "^8.0.3",
     "is-subdir": "^1.2.0",
@@ -62,11 +61,11 @@
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^2.9.2",
     "minimist": "^1.2.8",
+    "msw": "^2.12.9",
     "node-notifier": "^10.0.1",
     "plugin-error": "^2.0.1",
-    "pm2": "^6.0.13",
-    "prettier": "2.8.8",
-    "pretty-quick": "^4.0.0",
+    "prettier": "3.8.1",
+    "pretty-quick": "^4.2.2",
     "prop-types": "^15.6.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -90,7 +89,7 @@
     "docker-build-local": "node deploy/docker/create-docker-context.js --build --push --tag auto --local",
     "docker-build-prod": "node deploy/docker/create-docker-context.js --build --push --tag auto --repository=ghcr.io/terriajs",
     "docker-build-ci": "node deploy/docker/create-docker-context.js --build",
-    "start": "leylinesjs-server --config-file serverconfig.json",
+    "start": "leylines-server --config-file serverconfig.json",
     "gulp": "gulp",
     "postinstall": "echo 'Installation successful. What to do next:\\n  yarn gulp dev   # Starts the server on port 3001, builds TerriaMap and dependencies, and rebuilds if files change.'",
     "prettier": "prettier --write .",

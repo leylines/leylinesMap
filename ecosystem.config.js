@@ -10,7 +10,7 @@ module.exports = {
   apps: [
     {
       name: path.basename(__dirname),
-      script: require.resolve("leylinesjs-server"),
+      script: require.resolve("leylines-server"),
 
       // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
       // passed to app, so any valid arguments in options.js are allowed.

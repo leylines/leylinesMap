@@ -95,8 +95,8 @@ gulp.task("link-config", function (done) {
   src("../leylines-config/config.json").pipe(
     symlink("./wwwroot", { dirMode: false, overwrite: true })
   );
-  src("../leylines-config/catalogs").pipe(
-    symlink("./wwwroot", { dirMode: false, overwrite: true })
+  src("../leylines-config/catalogs", { allowEmpty: true }).pipe(
+    symlink("./wwwroot", { overwrite: true })
   );
   src("../leylines-geodata", { allowEmpty: true }).pipe(
     symlink("./wwwroot", { overwrite: true })
@@ -299,15 +299,17 @@ function checkForDuplicateCesium() {
   }
 }
 
-gulp.task("leylinesjs-server", terriajsServerGulpTask(3001));
+gulp.task("leylines-server", terriajsServerGulpTask(3001));
 
 gulp.task(
   "build",
-  gulp.series("link-config", "copy-terriajs-assets", "build-app")
+  //gulp.series("link-config", "copy-terriajs-assets", "build-app")
+  gulp.series("copy-terriajs-assets", "build-app")
 );
 gulp.task(
   "release",
-  gulp.series("link-config", "copy-terriajs-assets", "release-app")
+  //gulp.series("link-config", "copy-terriajs-assets", "release-app")
+  gulp.series("copy-terriajs-assets", "release-app")
 );
 gulp.task("watch", gulp.parallel("watch-terriajs-assets", "watch-app"));
 // Simple task that waits for index.html then starts server

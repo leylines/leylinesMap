@@ -16,7 +16,6 @@ datasources/00_National_Data_Sets.json
 /terriajs.pid
 /terriajs-server.log
 devserverconfig.json
-serverconfig.json
 productionserverconfig.json
 /wwwroot/editor/
 /error.log
@@ -34,3 +33,4 @@ yarn-error.log
 package-lock.json
 .nvmrc
 .tool-versions
+build_and_push_docker_image.sh

@@ -1,1 +1,127 @@
-/Users/joroth/Development/leylines.net/leylines-config/serverconfig.json
+{
+  "port": 3001,
+
+  "allowProxyFor": ["nicta.com.au", "gov.au", "csiro.au"],
+
+  "singlePageRouting": {
+    "resolvePathRelativeToWwwroot": "/index.html",
+    "resolveUnmatchedPathsWithIndexHtml": false
+  },
+
+  "proxyAllDomains": false,
+  "proxyPostSizeLimit": 102400,
+
+  "maxConversionSize": 1000000,
+
+  "initPaths": ["../randominits"],
+
+  "blacklistedAddresses": [
+    "127.0.0.0/8",
+    "::1/128",
+    "169.254.0.0/16",
+    "fe80::/10",
+    "10.0.0.0/8",
+    "172.16.0.0/12",
+    "192.168.0.0/16",
+    "fc00::/7",
+    "100.64.0.0/10",
+    "192.0.0.0/24",
+    "192.0.2.0/24",
+    "198.18.0.0/15",
+    "192.88.99.0/24",
+    "198.51.100.0/24",
+    "203.0.113.0/24",
+    "224.0.0.0/4",
+    "240.0.0.0/4",
+    "255.255.255.255/32",
+    "::/128",
+    "2001:db8::/32",
+    "ff00::/8"
+  ],
+
+  "upstreamProxy": "proxy.example.com",
+
+  "bypassUpstreamProxyFor": ["server.example.com"],
+
+  "esriTokenAuth": {
+    "postSizeLimit": 1024,
+    "servers": {
+      "https://example.com/somelayer": {
+        "username": "myusername",
+        "password": "mypassword",
+        "tokenUrl": "https://example.com/tokens/generateToken"
+      }
+    }
+  },
+
+  "feedback": {
+    "userAgent": "TerriaBot (TerriaJS Feedback)",
+    "issuesUrl": "https://api.github.com/repos/TerriaJS/NationalMap-Feedback/issues",
+    "accessToken": "provide your GitHub access token here",
+    "additionalParameters": [
+      {
+        "name": "organisation",
+        "descriptiveLabel": "Organisation"
+      }
+    ]
+  },
+
+  "trustProxy": false,
+
+  "basicAuthentication": {
+    "username": "myusername",
+    "password": "mypassword"
+  },
+
+  "rateLimit": {
+    "freeRetries": 2,
+    "minWait": 200,
+    "maxWait": 60000
+  },
+
+  "shareUrlPrefixes": {
+    "s": {
+      "service": "s3",
+      "region": "us-west-2",
+
+      "bucket": "terria-sharedata",
+
+      "accessKeyId": "ABC123",
+      "secretAccessKey": "abc+123-XYZ",
+
+      "keyLength": 16
+    },
+    "g": {
+      "service": "gist",
+      "accessToken": "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",
+
+      "userAgent": "leylinesMap",
+      "gistFilename": "usercatalog.json",
+      "gistDescription": "User catalog"
+    }
+  },
+  "newShareUrlPrefix": "g",
+  "shareMaxRequestSize": "200kb",
+  "hostName": "example.com",
+
+  "https": {
+    "key": "key.pem",
+    "cert": "cert.pem"
+  },
+
+  "redirectToHttps": true,
+  "strictTransportSecurity": "max-age=63072000; includeSubDomains; preload",
+
+  "httpAllowedHosts": ["localhost"],
+
+  "appendParamToQueryString": {
+    "somedomain.com": [
+      {
+        "regexPattern": "secured",
+        "params": {
+          "apikey": "123"
+        }
+      }
+    ]
+  }
+}
