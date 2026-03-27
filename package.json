@@ -28,7 +28,7 @@
   },
   "config": {
     "docker": {
-      "name": "terriamap",
+      "name": "leylinesmap",
       "include": "wwwroot node_modules serverconfig.json index.js package.json version.js",
       "dockerfile": "deploy/docker/Dockerfile"
     }
@@ -85,14 +85,12 @@
     "yargs": "^17.7.2"
   },
   "scripts": {
-    "prepare": "husky install",
-    "docker-build-local": "node deploy/docker/create-docker-context.js --build --push --tag auto --local",
-    "docker-build-prod": "node deploy/docker/create-docker-context.js --build --push --tag auto --repository=ghcr.io/terriajs",
-    "docker-build-ci": "node deploy/docker/create-docker-context.js --build",
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install; fi",
     "start": "leylines-server --config-file serverconfig.json",
+    "build": "gulp release",
     "gulp": "gulp",
-    "postinstall": "echo 'Installation successful. What to do next:\\n  yarn gulp dev   # Starts the server on port 3001, builds TerriaMap and dependencies, and rebuilds if files change.'",
     "prettier": "prettier --write .",
-    "prettier-check": "prettier --check ."
+    "prettier-check": "prettier --check .",
+    "postinstall": "echo 'Setup complete. Use \"yarn gulp dev\" for local development.'"
   }
 }

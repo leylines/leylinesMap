@@ -16,8 +16,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Update Version File
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          DATE=$(date +'%Y-%m-%d %H:%M')
+          SHA=$(git rev-parse --short HEAD)
+          echo "module.exports = { version: '$VERSION', build: '$DATE', commit: '$SHA' };" > version.js
+          echo "Building Version: $VERSION ($SHA)"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -32,10 +40,21 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=semver,pattern={{version}}
+            type=sha,format=short
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
