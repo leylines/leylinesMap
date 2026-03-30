@@ -22,8 +22,6 @@
     <a href="https://www.leylines.net">Homepage</a>
     ·
     <a href="https://maps.leylines.net">The Map</a>
-    ·
-    <a href="https://hub.leylines.net">The Hub</a>
   </p>
 </p>
 
