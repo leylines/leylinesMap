@@ -6,6 +6,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: leylines/leylinesmap
+  HUSKY: 0
 
 permissions:
   contents: read
