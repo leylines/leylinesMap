@@ -1,7 +1,6 @@
 node_modules/
 .idea/
 wwwroot/build/
-wwwroot/init/
 wwwroot/doc/
 wwwroot/index.html
 wwwroot/config.json
@@ -23,8 +22,6 @@ productionserverconfig.json
 /output.log
 privateserverconfig.json
 wwwroot/privateconfig.json
-wwwroot/leylines-geodata
-wwwroot/catalogs
 deploy/packages/
 deploy/work/
 packages/
