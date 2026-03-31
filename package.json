@@ -85,7 +85,6 @@
     "yargs": "^17.7.2"
   },
   "scripts": {
-    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install; fi",
     "start": "leylines-server --config-file serverconfig.json",
     "build": "gulp release",
     "gulp": "gulp",
