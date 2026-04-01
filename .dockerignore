@@ -1,0 +1,12 @@
+**/node_modules
+.git
+.github
+wwwroot/build
+# Betriebssystem-Müll
+.DS_Store
+Thumbs.db
+# Logs
+*.log
+terriajs-server.log*
+npm-debug.log*
+yarn-error.log*
