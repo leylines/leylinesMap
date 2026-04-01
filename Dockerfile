@@ -16,6 +16,7 @@ RUN yarn install --production --frozen-lockfile && yarn cache clean
 # 3. DEPLOY STAGE
 FROM node:22-slim AS deploy
 LABEL org.opencontainers.image.source=https://github.com/leylines/leylinesMap
+LABEL org.opencontainers.image.description="Dockerimage for leylinesMap"
 
 USER node
 WORKDIR /app
