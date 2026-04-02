@@ -6866,6 +6866,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
+"leylines-solids@https://github.com/leylines/leylines-solids#main":
+  version "1.0.0"
+  resolved "https://github.com/leylines/leylines-solids#926b079bb13abf8f2587e29682389588b5690395"
+
 liftoff@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/liftoff/-/liftoff-5.0.1.tgz#e2329e7f1e19e98c8dba71185f2078e6dbbc5c1f"
@@ -7303,6 +7307,11 @@ node-addon-api@^7.0.0:
   resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-7.1.1.tgz#1aba6693b0f255258a049d621329329322aad558"
   integrity sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==
 
+node-cron@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/node-cron/-/node-cron-4.2.1.tgz#6979be4aee4702f06322d21220df8de252c8e265"
+  integrity sha512-lgimEHPE/QDgFlywTd8yTR61ptugX3Qer29efeyWw2rv259HtGBNn1vZVmp8lB9uo9wC0t/AT4iGqXxia+CJFg==
+
 node-fetch@2.6.7:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
@@ -7661,6 +7670,62 @@ pbf@^4.0.1:
   dependencies:
     resolve-protobuf-schema "^2.1.0"
 
+pg-cloudflare@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/pg-cloudflare/-/pg-cloudflare-1.3.0.tgz#386035d4bfcf1a7045b026f8b21acf5353f14d65"
+  integrity sha512-6lswVVSztmHiRtD6I8hw4qP/nDm1EJbKMRhf3HCYaqud7frGysPv7FYJ5noZQdhQtN2xJnimfMtvQq21pdbzyQ==
+
+pg-connection-string@^2.12.0:
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/pg-connection-string/-/pg-connection-string-2.12.0.tgz#4084f917902bb2daae3dc1376fe24ac7b4eaccf2"
+  integrity sha512-U7qg+bpswf3Cs5xLzRqbXbQl85ng0mfSV/J0nnA31MCLgvEaAo7CIhmeyrmJpOr7o+zm0rXK+hNnT5l9RHkCkQ==
+
+pg-int8@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/pg-int8/-/pg-int8-1.0.1.tgz#943bd463bf5b71b4170115f80f8efc9a0c0eb78c"
+  integrity sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==
+
+pg-pool@^3.13.0:
+  version "3.13.0"
+  resolved "https://registry.yarnpkg.com/pg-pool/-/pg-pool-3.13.0.tgz#416482e9700e8f80c685a6ae5681697a413c13a3"
+  integrity sha512-gB+R+Xud1gLFuRD/QgOIgGOBE2KCQPaPwkzBBGC9oG69pHTkhQeIuejVIk3/cnDyX39av2AxomQiyPT13WKHQA==
+
+pg-protocol@^1.13.0:
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/pg-protocol/-/pg-protocol-1.13.0.tgz#fdaf6d020bca590d58bb991b4b16fc448efe0511"
+  integrity sha512-zzdvXfS6v89r6v7OcFCHfHlyG/wvry1ALxZo4LqgUoy7W9xhBDMaqOuMiF3qEV45VqsN6rdlcehHrfDtlCPc8w==
+
+pg-types@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/pg-types/-/pg-types-2.2.0.tgz#2d0250d636454f7cfa3b6ae0382fdfa8063254a3"
+  integrity sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==
+  dependencies:
+    pg-int8 "1.0.1"
+    postgres-array "~2.0.0"
+    postgres-bytea "~1.0.0"
+    postgres-date "~1.0.4"
+    postgres-interval "^1.1.0"
+
+pg@^8.17.2:
+  version "8.20.0"
+  resolved "https://registry.yarnpkg.com/pg/-/pg-8.20.0.tgz#1a274de944cb329fd6dd77a6d371a005ba6b136d"
+  integrity sha512-ldhMxz2r8fl/6QkXnBD3CR9/xg694oT6DZQ2s6c/RI28OjtSOpxnPrUCGOBJ46RCUxcWdx3p6kw/xnDHjKvaRA==
+  dependencies:
+    pg-connection-string "^2.12.0"
+    pg-pool "^3.13.0"
+    pg-protocol "^1.13.0"
+    pg-types "2.2.0"
+    pgpass "1.0.5"
+  optionalDependencies:
+    pg-cloudflare "^1.3.0"
+
+pgpass@1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/pgpass/-/pgpass-1.0.5.tgz#9b873e4a564bb10fa7a7dbd55312728d422a223d"
+  integrity sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==
+  dependencies:
+    split2 "^4.1.0"
+
 picocolors@1.1.1, picocolors@^1.0.0, picocolors@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-1.1.1.tgz#3d321af3eab939b083c8f929a1d12cda81c26b6b"
@@ -7764,6 +7829,28 @@ postcss@^8.2.14, postcss@^8.4.33:
     nanoid "^3.3.11"
     picocolors "^1.1.1"
     source-map-js "^1.2.1"
+
+postgres-array@~2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/postgres-array/-/postgres-array-2.0.0.tgz#48f8fce054fbc69671999329b8834b772652d82e"
+  integrity sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==
+
+postgres-bytea@~1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/postgres-bytea/-/postgres-bytea-1.0.1.tgz#c40b3da0222c500ff1e51c5d7014b60b79697c7a"
+  integrity sha512-5+5HqXnsZPE65IJZSMkZtURARZelel2oXUEO8rH83VS/hxH5vv1uHquPg5wZs8yMAfdv971IU+kcPUczi7NVBQ==
+
+postgres-date@~1.0.4:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/postgres-date/-/postgres-date-1.0.7.tgz#51bc086006005e5061c591cee727f2531bf641a8"
+  integrity sha512-suDmjLVQg78nMK2UZ454hAG+OAW+HQPZ6n++TNDUX+L0+uUlLywnoxJKDou51Zm+zTCjrCl0Nq6J9C5hP9vK/Q==
+
+postgres-interval@^1.1.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/postgres-interval/-/postgres-interval-1.2.0.tgz#b460c82cb1587507788819a06aa0fffdb3544695"
+  integrity sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==
+  dependencies:
+    xtend "^4.0.0"
 
 potpack@^1.0.2:
   version "1.0.2"
@@ -8804,6 +8891,11 @@ sparkles@^2.1.0:
   resolved "https://registry.yarnpkg.com/sparkles/-/sparkles-2.1.0.tgz#8ad4e8cecba7e568bba660c39b6db46625ecf1ad"
   integrity sha512-r7iW1bDw8R/cFifrD3JnQJX0K1jqT0kprL48BiBpLZLJPmAm34zsVBsK5lc7HirZYZqMW65dOXZgbAGt/I6frg==
 
+split2@^4.1.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/split2/-/split2-4.2.0.tgz#c9c5920904d148bab0b9f67145f245a86aadbfa4"
+  integrity sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==
+
 stable@^0.1.8:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/stable/-/stable-0.1.8.tgz#836eb3c8382fe2936feaf544631017ce7d47a3cf"
@@ -9139,27 +9231,19 @@ terriajs-html2canvas@1.0.0-alpha.12-terriajs-1:
   dependencies:
     css-line-break "1.0.1"
 
-terriajs-plugin-api@0.0.1-alpha.17:
+terriajs-plugin-api@0.0.1-alpha.16, terriajs-plugin-api@0.0.1-alpha.17, terriajs-plugin-api@0.0.1-alpha.6, "terriajs-plugin-api@https://github.com/leylines/plugin-api#main":
   version "0.0.1-alpha.17"
-  resolved "https://registry.yarnpkg.com/terriajs-plugin-api/-/terriajs-plugin-api-0.0.1-alpha.17.tgz#9c773dc8bca402ebfad3d029c4cb314b22c193b1"
-  integrity sha512-8qd5zxmks31RMfDvzInCezdmuB6D9rG9uu++dHXn+ei/ED9Q2pN0eBE0GmqtVX9mQqY2x1TTZWC2m7NAtir0Gg==
+  resolved "https://github.com/leylines/plugin-api#2c336c8d4e27bafa80beae54a567d9e53026c05e"
 
-terriajs-plugin-api@0.0.1-alpha.6:
-  version "0.0.1-alpha.6"
-  resolved "https://registry.yarnpkg.com/terriajs-plugin-api/-/terriajs-plugin-api-0.0.1-alpha.6.tgz#d1aca8cbc64c6e78650c70706799ec7286062eed"
-  integrity sha512-qH9fOH4ZgO+gtW3ZLa52QQWCbZhS+PtF8YL0Z8+bKuwvM9yiFCnCLgFrOZnIcHZ8xj59j16Kvxnc068iDjNQfQ==
-
-terriajs-plugin-sample@0.0.1-alpha.7:
-  version "0.0.1-alpha.7"
-  resolved "https://registry.yarnpkg.com/terriajs-plugin-sample/-/terriajs-plugin-sample-0.0.1-alpha.7.tgz#d740cb43749cd49205a90d3fee7fa0bfb8c704f9"
-  integrity sha512-9OhnTUQABM7gypcEhcSW6/LfDGw8/dBjkJPA+eOcp+6K3Eq83E06llq8UzYNBSFA2xWIILsqO1ej4mhTqWzfBA==
+terriajs-plugin-sample@0.0.1-alpha.7, "terriajs-plugin-sample@https://github.com/leylines/plugin-sample#main":
+  version "0.0.1-alpha.8"
+  resolved "https://github.com/leylines/plugin-sample#c2fae083fa8f12ba99485b2d7dd74b3c5810ca2c"
   dependencies:
-    terriajs-plugin-api "0.0.1-alpha.6"
+    terriajs-plugin-api "0.0.1-alpha.16"
 
-terriajs-server@^5.0.0-alpha.2:
+terriajs-server@^5.0.0-alpha.2, "terriajs-server@https://github.com/leylines/leylines-server#main":
   version "5.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/terriajs-server/-/terriajs-server-5.0.0-alpha.2.tgz#1b310a50cb720b6be5a80ef91202681c7a492c3e"
-  integrity sha512-acX69/dcSyMRvzmT9ekfvbghmyM8DwFQ2ehNRwqxCZQvaTuYiWLmlXgxzyaKOc8ZXsXs97W6D0AckDPiCjS3+Q==
+  resolved "https://github.com/leylines/leylines-server#445bbb791e22b0b940a972fc95e1e9934f367288"
   dependencies:
     "@aws-sdk/client-s3" "^3.1017.0"
     base-x "^5.0.1"
@@ -9170,7 +9254,10 @@ terriajs-server@^5.0.0-alpha.2:
     cors "^2.8.6"
     express "^5.2.1"
     json5 "^2.2.3"
+    leylines-solids "https://github.com/leylines/leylines-solids#main"
     morgan "^1.10.1"
+    node-cron "^4.2.1"
+    pg "^8.17.2"
     proj4-cli-defs "^2.1.0"
     range_check "^4.1.0"
     rate-limiter-flexible "^9.1.1"
@@ -9195,10 +9282,9 @@ terriajs-typings-for-css-modules-loader@^2.5.2:
   optionalDependencies:
     prettier "*"
 
-terriajs@8.12.2:
+terriajs@8.12.2, "terriajs@https://github.com/leylines/terriajs#main":
   version "8.12.2"
-  resolved "https://registry.yarnpkg.com/terriajs/-/terriajs-8.12.2.tgz#f5c4a8446d497c6759dbc59e9544b05a7e79720b"
-  integrity sha512-Yj3Ve6+Q1WstjO1yvyoILC8EAwOzF/3C0Nv8VCG60A6mZ/UIN46R82waEtP84BaBUrtrnGEGkWa5MyuZMI/X3Q==
+  resolved "https://github.com/leylines/terriajs#ae39f84a05e0e7bd4e7d01697b66c8a2c88c6eab"
   dependencies:
     "@babel/core" "^7.28.0"
     "@babel/plugin-proposal-decorators" "^7.28.0"
@@ -10043,6 +10129,11 @@ xpath@^0.0.34:
   version "0.0.34"
   resolved "https://registry.yarnpkg.com/xpath/-/xpath-0.0.34.tgz#a769255e8816e0938e1e0005f2baa7279be8be12"
   integrity sha512-FxF6+rkr1rNSQrhUNYrAFJpRXNzlDoMxeXN5qI84939ylEv3qqPFKa85Oxr6tDaJKqwW6KKyo2v26TSv3k6LeA==
+
+xtend@^4.0.0:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
+  integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
 
 y18n@^4.0.0:
   version "4.0.3"

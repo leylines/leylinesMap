@@ -35,6 +35,9 @@
   },
   "resolutions": {
     "terriajs-server": "https://github.com/leylines/leylines-server#main",
+    "terriajs": "https://github.com/leylines/terriajs#main",
+    "terriajs-plugin-api": "https://github.com/leylines/plugin-api#main",
+    "terriajs-plugin-sample": "https://github.com/leylines/plugin-sample#main",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.1"
   },
@@ -75,10 +78,10 @@
     "sass-loader": "^16.0.3",
     "style-loader": "^4.0.0",
     "svg-sprite": "^2.0.4",
-    "terriajs": "https://github.com/leylines/terriajs#main",
+    "terriajs": "8.12.2",
     "terriajs-cesium": "23.0.2",
-    "terriajs-plugin-api": "https://github.com/leylines/plugin-api",
-    "terriajs-plugin-sample": "https://github.com/leylines/plugin-sample",
+    "terriajs-plugin-api": "0.0.1-alpha.17",
+    "terriajs-plugin-sample": "0.0.1-alpha.7",
     "typescript": "^5.9.2",
     "urijs": "^1.18.12",
     "webpack": "^5.96.1",
