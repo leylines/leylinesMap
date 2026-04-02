@@ -24,7 +24,7 @@
     "url": "https://github.com/leylines/leylinesMap"
   },
   "dependencies": {
-    "leylines-server": "https://github.com/leylines/leylines-server"
+    "terriajs-server": "^5.0.0-alpha.2"
   },
   "config": {
     "docker": {
@@ -34,6 +34,7 @@
     }
   },
   "resolutions": {
+    "terriajs-server": "https://github.com/leylines/leylines-server#main",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.1"
   },
