@@ -9231,11 +9231,11 @@ terriajs-html2canvas@1.0.0-alpha.12-terriajs-1:
   dependencies:
     css-line-break "1.0.1"
 
-terriajs-plugin-api@0.0.1-alpha.16, terriajs-plugin-api@0.0.1-alpha.17, terriajs-plugin-api@0.0.1-alpha.6, "terriajs-plugin-api@https://github.com/leylines/plugin-api#main":
+terriajs-plugin-api@0.0.1-alpha.16, terriajs-plugin-api@0.0.1-alpha.17, "terriajs-plugin-api@https://github.com/leylines/plugin-api#main":
   version "0.0.1-alpha.17"
   resolved "https://github.com/leylines/plugin-api#2c336c8d4e27bafa80beae54a567d9e53026c05e"
 
-terriajs-plugin-sample@0.0.1-alpha.7, "terriajs-plugin-sample@https://github.com/leylines/plugin-sample#main":
+terriajs-plugin-sample@0.0.1-alpha.8, "terriajs-plugin-sample@https://github.com/leylines/plugin-sample#main":
   version "0.0.1-alpha.8"
   resolved "https://github.com/leylines/plugin-sample#c2fae083fa8f12ba99485b2d7dd74b3c5810ca2c"
   dependencies:
