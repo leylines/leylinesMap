@@ -4,6 +4,7 @@ USER node
 WORKDIR /app
 COPY --chown=node:node . .
 
+ENV CI=true
 # Installiert ALLES (auch devDependencies für Gulp)
 RUN yarn install --network-timeout 1000000 --network-concurrency 1
 RUN yarn gulp release
