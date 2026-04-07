@@ -9241,7 +9241,7 @@ terriajs-plugin-sample@0.0.1-alpha.8, "terriajs-plugin-sample@https://github.com
   dependencies:
     terriajs-plugin-api "0.0.1-alpha.17"
 
-terriajs-server@^5.0.0-alpha.2, "terriajs-server@https://github.com/leylines/leylines-server#main":
+terriajs-server@5.0.0-alpha.2, "terriajs-server@https://github.com/leylines/leylines-server#main":
   version "5.0.0-alpha.2"
   resolved "https://github.com/leylines/leylines-server#3bb030413d4a14cd85137b7d1e6f0b92509e094d"
   dependencies:
