@@ -68,10 +68,10 @@
 
   "trustProxy": false,
 
-  "basicAuthentication": {
-    "username": "myusername",
-    "password": "mypassword"
-  },
+  //  "basicAuthentication": {
+  //    "username": "myusername",
+  //    "password": "mypassword"
+  //  },
 
   "rateLimit": {
     "freeRetries": 2,
@@ -104,12 +104,12 @@
   "shareMaxRequestSize": "200kb",
   "hostName": "example.com",
 
-  "https": {
-    "key": "key.pem",
-    "cert": "cert.pem"
-  },
+  //  "https": {
+  //    "key": "key.pem",
+  //    "cert": "cert.pem"
+  //  },
 
-  "redirectToHttps": true,
+  "redirectToHttps": false,
   "strictTransportSecurity": "max-age=63072000; includeSubDomains; preload",
 
   "httpAllowedHosts": ["localhost"],
