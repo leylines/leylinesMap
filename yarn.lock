@@ -6866,6 +6866,29 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
+"leylines-server@https://github.com/leylines/leylines-server#main":
+  version "5.0.0-alpha.2"
+  resolved "https://github.com/leylines/leylines-server#91e315b5e026f4192eb07ac40c0d979f931d4dbf"
+  dependencies:
+    "@aws-sdk/client-s3" "^3.1017.0"
+    base-x "^5.0.1"
+    basic-auth "^2.0.1"
+    body-parser "^2.2.2"
+    bytes "^3.1.2"
+    compression "^1.8.1"
+    cors "^2.8.6"
+    express "^5.2.1"
+    json5 "^2.2.3"
+    leylines-solids "https://github.com/leylines/leylines-solids#main"
+    morgan "^1.10.1"
+    node-cron "^4.2.1"
+    pg "^8.17.2"
+    proj4-cli-defs "^2.1.0"
+    range_check "^4.1.0"
+    rate-limiter-flexible "^9.1.1"
+    undici "^7.24.6"
+    yargs "^18.0.0"
+
 "leylines-solids@https://github.com/leylines/leylines-solids#main":
   version "1.0.0"
   resolved "https://github.com/leylines/leylines-solids#926b079bb13abf8f2587e29682389588b5690395"
@@ -9240,29 +9263,6 @@ terriajs-plugin-sample@0.0.1-alpha.8, "terriajs-plugin-sample@https://github.com
   resolved "https://github.com/leylines/plugin-sample#26a332430707bdf2c26d7bb652a596882e62f41e"
   dependencies:
     terriajs-plugin-api "0.0.1-alpha.17"
-
-terriajs-server@5.0.0-alpha.2, "terriajs-server@https://github.com/leylines/leylines-server#main":
-  version "5.0.0-alpha.2"
-  resolved "https://github.com/leylines/leylines-server#3bb030413d4a14cd85137b7d1e6f0b92509e094d"
-  dependencies:
-    "@aws-sdk/client-s3" "^3.1017.0"
-    base-x "^5.0.1"
-    basic-auth "^2.0.1"
-    body-parser "^2.2.2"
-    bytes "^3.1.2"
-    compression "^1.8.1"
-    cors "^2.8.6"
-    express "^5.2.1"
-    json5 "^2.2.3"
-    leylines-solids "https://github.com/leylines/leylines-solids#main"
-    morgan "^1.10.1"
-    node-cron "^4.2.1"
-    pg "^8.17.2"
-    proj4-cli-defs "^2.1.0"
-    range_check "^4.1.0"
-    rate-limiter-flexible "^9.1.1"
-    undici "^7.24.6"
-    yargs "^18.0.0"
 
 terriajs-tiff-imagery-provider@2.13.3-webpack5-3:
   version "2.13.3-webpack5-3"
