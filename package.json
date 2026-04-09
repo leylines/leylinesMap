@@ -62,7 +62,7 @@
     "is-subdir": "^1.2.0",
     "json5": "^2.1.0",
     "lodash": "^4.17.21",
-    "mini-css-extract-plugin": "^2.9.2",
+    "mini-css-extract-plugin": "^2.10.2",
     "minimist": "^1.2.8",
     "msw": "^2.12.14",
     "node-notifier": "^10.0.1",
