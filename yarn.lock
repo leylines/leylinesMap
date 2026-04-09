@@ -6895,7 +6895,7 @@ levn@^0.4.1:
 
 "leylines-server@https://github.com/leylines/leylines-server#main":
   version "5.0.0-alpha.2"
-  resolved "https://github.com/leylines/leylines-server#e4b155e1dd121cccb6f18395aece61227ec7b4d0"
+  resolved "https://github.com/leylines/leylines-server#ad4affbd37266face32f165f0272a618f7785aee"
   dependencies:
     "@aws-sdk/client-s3" "^3.1017.0"
     base-x "^5.0.1"
@@ -9311,7 +9311,7 @@ terriajs-typings-for-css-modules-loader@^2.5.2:
 
 "terriajs@https://github.com/leylines/terriajs#main", terriajs@terriajs/terriajs#main:
   version "8.12.2"
-  resolved "https://github.com/leylines/terriajs#707d9070f06227d4e6ca6f6db2c0f900de758c32"
+  resolved "https://github.com/leylines/terriajs#9a4c8ca68314cb7197d3459c7f0aa8ee67017fea"
   dependencies:
     "@babel/core" "^7.29.0"
     "@babel/plugin-proposal-decorators" "^7.29.0"
