@@ -1,9 +1,24 @@
 {
   "homeCamera": {
-    "north": -8,
-    "east": 158,
-    "south": -45,
-    "west": 109
+    "west": -36.71552444513493,
+    "south": -18.354253038279378,
+    "east": 87.24156809826991,
+    "north": 32.973282519670335,
+    "position": {
+      "x": 19795144.193246543,
+      "y": 9342227.815832423,
+      "z": 4981185.575901657
+    },
+    "direction": {
+      "x": -0.8820849276300011,
+      "y": -0.41630881742183573,
+      "z": -0.22048389733676332
+    },
+    "up": {
+      "x": -0.19595085814381322,
+      "y": -0.10138065409631446,
+      "z": 0.9753590232154039
+    }
   },
   "catalog": [
     {
@@ -721,7 +736,63 @@
   ],
   "viewerMode": "3dSmooth",
   "baseMaps": {
-    "defaultBaseMapId": "basemap-openstreetmap",
-    "previewBaseMapId": "basemap-natural-earth-II"
+    "previewBaseMapId": "carto-positron",
+    "items": [
+      {
+        "item": {
+          "id": "ch-openstreetmap",
+          "name": "Open Street Map",
+          "url": "https://tile.osm.ch/switzerland",
+          "type": "open-street-map",
+          "opacity": 1.0
+        },
+        "image": "/images/basemaps/openstreetmap-ch.png"
+      },
+      {
+        "item": {
+          "id": "opentopomap",
+          "name": "Open Topo Map",
+          "url": "https://a.tile.opentopomap.org",
+          "type": "open-street-map",
+          "opacity": 1.0
+        },
+        "image": "/images/basemaps/opentopomap.png"
+      },
+      {
+        "item": {
+          "id": "carto-positron",
+          "name": "Positron (Light)",
+          "type": "open-street-map",
+          "url": "https://basemaps.cartocdn.com/light_all/",
+          "attribution": "© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a>, © <a href='https://carto.com/about-carto/'>CARTO</a>",
+          "subdomains": ["a", "b", "c", "d"],
+          "opacity": 1.0
+        },
+        "image": "/images/basemaps/carto-positron.png",
+        "contrastColor": "#000000"
+      },
+      {
+        "item": {
+          "id": "stamen-terrain",
+          "name": "Stamen Terrain",
+          "url": "https://tiles.stadiamaps.com/tiles/stamen_terrain/",
+          "type": "open-street-map",
+          "opacity": 1.0,
+          "attribution": "&copy; <a href=\"https://stadiamaps.com/\" target=\"_blank\">Stadia Maps</a>, &copy; <a href=\"https://openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a> &copy; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">OpenStreetMap</a>"
+        },
+        "image": "/images/basemaps/stamen-terrain.png"
+      },
+      {
+        "item": {
+          "id": "gebco-latest",
+          "name": "Gebco Latest",
+          "url": "https://wms.gebco.net/mapserv",
+          "type": "wms",
+          "layers": "GEBCO_LATEST_SUB_ICE_TOPO",
+          "opacity": 1.0
+        },
+        "image": "/images/basemaps/gebco-latest.png"
+      }
+    ]
   }
 }
