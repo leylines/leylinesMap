@@ -2,7 +2,7 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "packages/terriajs1",
+      "packages/terriajs",
       "packages/terriajs-cesium/packages/engine",
       "packages/terriajs-cesium/packages/widgets",
       "packages/leylines-server",
@@ -77,7 +77,6 @@
     "sass-loader": "^16.0.7",
     "style-loader": "^4.0.0",
     "svg-sprite": "^2.0.4",
-    "terriajs": "terriajs/terriajs#main",
     "terriajs-cesium": "23.0.2",
     "terriajs-plugin-api": "0.0.1-alpha.17",
     "terriajs-plugin-sample": "0.0.1-alpha.8",
