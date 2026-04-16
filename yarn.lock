@@ -6855,7 +6855,7 @@ levn@^0.4.1:
 
 "leylines-server@https://github.com/leylines/leylines-server#main":
   version "5.0.0-alpha.2"
-  resolved "https://github.com/leylines/leylines-server#dc97a0c069fb116951131d3556c4918f4ced2fe2"
+  resolved "https://github.com/leylines/leylines-server#57c753e95a19b1cdd439e93ecc16f46dfb64be07"
   dependencies:
     "@aws-sdk/client-s3" "^3.1017.0"
     base-x "^5.0.1"
