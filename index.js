@@ -10,6 +10,7 @@ import updateApplicationOnHashChange from "terriajs/lib/ViewModels/updateApplica
 import updateApplicationOnMessageFromParentWindow from "terriajs/lib/ViewModels/updateApplicationOnMessageFromParentWindow";
 //import loadPlugins from "./lib/Core/loadPlugins";
 import showGlobalDisclaimer from "./lib/Views/showGlobalDisclaimer";
+//import UvgGridFunction from "./lib/Plugins/UvgGridFunction";
 //import plugins from "./plugins";
 
 const terriaOptions = {
@@ -43,6 +44,8 @@ registerSearchProviders();
 // Register custom components in the core TerriaJS.  If you only want to register a subset of them, or to add your own,
 // insert your custom version of the code in the registerCustomComponentTypes function here instead.
 registerCustomComponentTypes(terria);
+
+//terria.modelFactories.register(UvgGridFunction.type, UvgGridFunction);
 
 if (process.env.NODE_ENV === "development") {
   window.viewState = viewState;
