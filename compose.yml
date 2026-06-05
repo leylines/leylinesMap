@@ -1,0 +1,59 @@
+services:
+  db:
+    image: imresamu/postgis:17-3.6-alpine3.22
+    #image: chikeozulumba/postgres-postgis-h3:latest
+    env_file: ./.env
+    container_name: leylines_db
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT}:5432"
+    volumes:
+      - ../postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_RO_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  leylinesmap:
+    #image: ghcr.io/leylines/leylinesmap:latest
+    image: leylinesmap:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: ./.env
+    deploy:
+      replicas: 4
+    restart: unless-stopped
+    volumes:
+      - ../leylines-config/serverconfig.json:/app/serverconfig.json:ro
+      - ../leylines-config/config.json:/app/wwwroot/config.json:ro
+      - ../leylines-config/leylines.json:/app/wwwroot/init/leylines.json:ro
+      - ../leylines-config/leylines-stripped.json:/app/wwwroot/init/leylines-stripped.json:ro
+      - ../leylines-config/catalogs:/app/wwwroot/catalogs:ro
+      - ../leylines-geodata:/app/wwwroot/leylines-geodata:ro
+
+  geoserver:
+    image: kartoza/geoserver:latest
+    volumes:
+      - ../geoserver-data:/opt/geoserver/data_dir
+    environment:
+      - GEOSERVER_ADMIN_PASSWORD=admin
+      - GEOSERVER_ADMIN_USER=admin
+      - SKIP_DEMO_DATA=true
+      - INITIAL_MEMORY=2G
+      - MAXIMUM_MEMORY=4G
+      - WEBAPP_CONTEXT=""
+      - HTTP_PROXY_NAME=geoserver.localhost
+      - HTTP_SCHEME=http
+      - ROOT_WEBAPP_REDIRECT=true
+    depends_on:
+      db:
+        condition: service_healthy # Wichtig: Erst starten, wenn DB bereit ist!
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.geoserver.rule=Host(`geoserver.localhost`)"
+      - "traefik.http.routers.geoserver.entrypoints=web"
+      #- "traefik.http.middlewares.gs-add-prefix.addprefix.prefix=/geoserver"
+      #- "traefik.http.routers.geoserver.middlewares=gs-add-prefix"
+      - "traefik.http.services.geoserver.loadbalancer.server.port=8080"

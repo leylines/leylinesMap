@@ -1,5 +1,6 @@
 node_modules/
 .idea/
+.env
 wwwroot/build/
 wwwroot/doc/
 wwwroot/index.html
@@ -30,3 +31,5 @@ package-lock.json
 .nvmrc
 .tool-versions
 build_and_push_docker_image.sh
+sync-leylines-db.sh
+toDo.txt
