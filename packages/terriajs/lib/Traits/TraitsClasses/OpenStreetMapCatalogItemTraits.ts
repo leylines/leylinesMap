@@ -52,4 +52,12 @@ export default class OpenStreetMapCatalogItemTraits extends mixTraits(
     type: "string"
   })
   subdomains: string[] = [];
+
+  /** TODO: Make this camel case please */
+  @primitiveTrait({
+    type: "string",
+    name: "Authorization token",
+    description: "The authorization token to pass to the Carto Maps API"
+  })
+  auth_token?: string;
 }

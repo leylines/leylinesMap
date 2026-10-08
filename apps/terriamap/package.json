@@ -74,8 +74,8 @@
     "start": "terriajs-server --config-file serverconfig.json",
     "gulp": "gulp",
     "build": "gulp build",
-    "dev": "gulp dev",
-    "postinstall": "echo 'Installation successful. What to do next:\\n  pnpm gulp dev   # Starts the server on port 3001, builds TerriaMap and dependencies, and rebuilds if files change.'",
+    "dev": "gulp dev --terriajsServerArg configFile=serverconfig.json",
+    "postinstall": "echo 'Installation successful. What to do next:\\n  pnpm dev   # Starts the server with serverconfig.json on port 3001 and watches for changes.'",
     "prettier": "prettier --write .",
     "prettier-check": "prettier --check .",
     "lint": "gulp lint"

@@ -166,6 +166,7 @@ class Compass extends PureComponent<PropTypes, IStateTypes> {
   _unsubscribeFromPostRender: any;
   _unsubscribeFromAnimationFrame: any;
   private _unsubscribeFromViewerChange?: CesiumEvent.RemoveCallback;
+  private _disposeCesiumWhen?: () => void;
   orbitMouseMoveFunction?: (this: Document, ev: MouseEvent) => any;
   orbitMouseUpFunction?: (this: Document, ev: MouseEvent) => any;
   rotateMouseMoveFunction?: (this: Document, ev: MouseEvent) => any;
@@ -195,8 +196,13 @@ class Compass extends PureComponent<PropTypes, IStateTypes> {
       active: false,
       activeForTransition: false
     };
+  }
 
-    when(
+  componentDidMount() {
+    // Starting this reaction in the constructor can invoke viewerChange before
+    // React has mounted the component. viewerChange subscribes to Cesium's
+    // postRender event, whose leading debounced callback calls setState.
+    this._disposeCesiumWhen = when(
       () => isDefined(this.cesiumViewer),
       () => this.cesiumLoaded()
     );
@@ -216,6 +222,8 @@ class Compass extends PureComponent<PropTypes, IStateTypes> {
   }
 
   componentWillUnmount() {
+    this._disposeCesiumWhen?.();
+    this._disposeCesiumWhen = undefined;
     if (this.orbitMouseMoveFunction) {
       document.removeEventListener(
         "mousemove",

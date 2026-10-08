@@ -18,7 +18,7 @@ module.exports = function ({ devMode, baseHref = "/" }) {
     entry: "./entry.js",
     output: {
       path: path.resolve(__dirname, "..", "wwwroot", "build"),
-      filename: "TerriaMap.js",
+      filename: "LeylinesMap.js",
       publicPath: "build/",
       sourcePrefix: "", // to avoid breaking multi-line string literals by inserting extra tabs.
       globalObject: "(self || window)" // to avoid breaking in web worker (https://github.com/webpack/webpack/issues/6642)
@@ -111,7 +111,7 @@ module.exports = function ({ devMode, baseHref = "/" }) {
     plugins: [
       // Extract SASS styles into a seperate stylesheet
       new MiniCssExtractPlugin({
-        filename: "TerriaMap.css",
+        filename: "LeylinesMap.css",
         ignoreOrder: true
       }),
       new HtmlPlugin({

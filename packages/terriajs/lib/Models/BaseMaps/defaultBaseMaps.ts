@@ -1,9 +1,10 @@
 import Terria from "../Terria";
 import { BaseMapJson } from "./BaseMapsModel";
 
-export function defaultBaseMaps(terria: Terria): BaseMapJson[] {
+export function defaultBaseMaps(_terria: Terria): BaseMapJson[] {
   const baseMaps: BaseMapJson[] = [];
 
+  /*
   if (
     terria.configParameters.bingMapsKey &&
     !terria.configParameters.useCesiumIonBingImagery
@@ -107,6 +108,23 @@ export function defaultBaseMaps(terria: Terria): BaseMapJson[] {
     image: "build/TerriaJS/images/openstreetmap.png",
     contrastColor: "#000000"
   });
+
+  baseMaps.push({
+    item: {
+      id: "basemap-carto",
+      name: "Carto Light",
+      type: "open-street-map",
+      auth_token: "cb1_44qe_1_bb8e2b4cc59de0285372e122",
+      url: "https://basemaps.cartocdn.com/light_all",
+      subdomains: ["a", "b", "c", "d"],
+      attribution:
+        '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' + '© <a href="https://carto.com/attribution/">CARTO</a>',
+      opacity: 1.0
+    },
+    image: "build/TerriaJS/images/openstreetmap.png",
+    contrastColor: "#000000"
+  });
+*/
 
   return baseMaps;
 }

@@ -1,95 +1,102 @@
 <!DOCTYPE html>
 <html lang="en" class="terria">
-  <head>
-    <base href="<%= baseHref %>" />
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
-    <!-- Use Chrome Frame in IE -->
-    <meta
-      name="viewport"
-      content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
-    />
-    <meta name="description" content="A web map built on Terria Map" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+<head>
+    <base href="<%= baseHref %>">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">  <!-- Use Chrome Frame in IE -->
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="description" content="leylines.net documents and archives leylines and places of high energy, mapping a global network that invites us to perceive Earth as a living, interconnected system where geography, geometry, and human consciousness converge.">
+    <meta name="copyright" content="Copyright&copy; 2015-2026 leylines.net. All rights reserved.">
+    <meta name="author" content="Joerg Roth">
+    <meta name="robots" content="all">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
 
-    <link
-      rel="apple-touch-icon"
-      sizes="57x57"
-      href="favicons/apple-icon-57x57.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="60x60"
-      href="favicons/apple-icon-60x60.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="favicons/apple-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="76x76"
-      href="favicons/apple-icon-76x76.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="favicons/apple-icon-114x114.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="120x120"
-      href="favicons/apple-icon-120x120.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="144x144"
-      href="favicons/apple-icon-144x144.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="152x152"
-      href="favicons/apple-icon-152x152.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="favicons/apple-icon-180x180.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="192x192"
-      href="favicons/android-icon-192x192.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="favicons/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="96x96"
-      href="favicons/favicon-96x96.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="favicons/favicon-16x16.png"
-    />
-    <link rel="manifest" href="favicons/manifest.json" />
-    <meta name="msapplication-TileColor" content="#282D32" />
-    <meta
-      name="msapplication-TileImage"
-      content="favicons/ms-icon-144x144.png"
-    />
+    <link rel="canonical" href="https://maps.leylines.net" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/favicons/site.webmanifest">
+    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="/favicons/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="build/LeylinesMap.css">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta itemprop="name" content="Leylines - 3D-Globe">
+    <meta itemprop="description" content="leylines.net documents, researches and archives ley lines and places of high energy and tries to find a global network that connects local ley lines to a large energy network.">
+    <meta itemprop="image" content="https://maps.leylines.net/images/leylines-sign.png">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@EarthAndData">
+    <meta name="twitter:title" content="Leylines - 3D-Globe">
+    <meta name="twitter:description" content="leylines.net documents, researches and archives ley lines and places of high energy and tries to find a global network that connects local ley lines to a large energy network.">
+    <meta name="twitter:image" content="https://maps.leylines.net/images/leylines-sign.png">
+
+    <meta property="og:title" content="Leylines - 3D-Globe">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://maps.leylines.net">
+    <meta property="og:image" content="https://maps.leylines.net/images/leylines-sign.png">
+    <meta property="og:description" content="leylines.net documents, researches and archives ley lines and places of high energy and tries to find a global network that connects local ley lines to a large energy network.">
+    <meta property="og:site_name" content="Leylines - 3D-Globe">
+    <meta property="fb:admins" content="100014604464376">
+
     <meta name="theme-color" content="#282D32" />
+    <title>Leylines Map - All about ley lines | maps.leylines.net</title>
 
-    <title>Terria Map</title>
+    <script type='application/ld+json'>
+    {
+      "@context": "http://www.schema.org",
+      "@type": "Organization",
+      "name": "Leylines",
+      "url": "https://www.leylines.net",
+      "sameAs": [
+        "https://hub.leylines.net",
+        "https://maps.leylines.net",
+        "https://www.facebook.com/leylines.ch/",
+        "https://www.linkedin.com/in/joerg-roth",
+        "https://twitter.com/earthanddata"
+      ],
+      "logo": "https://www.leylines.net/img/leylines-sign.png",
+      "image": "https://www.leylines.net/img/leylines-logo.svg",
+      "description": "leylines.net documents, researches and archives ley lines and places of high energy and tries to find a global network that connects local ley lines to a large energy network.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Stettbachstrasse 58",
+        "addressLocality": "Zuerich",
+        "addressRegion": "Zuerich",
+        "postalCode": "8051",
+        "addressCountry": "Switzerland"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "47.409932",
+        "longitude": "8.573296"
+      },
+      "hasMap": "https://goo.gl/maps/1k42RPA4c2tp2i9q7",
+      "openingHours": "Mo, Tu, We, Th, Fr 08:00-18:00"
+    }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "http://schema.org/",
+        "@type": "WebApplication",
+        "name": "Leylines",
+        "url": "https://maps.leylines.net",
+        "description": "Leylines",
+        "applicationCategory": "Education, Globe, 3D, Multimedia",
+        "genre": "leylines",
+        "about": {
+          "@type": "Thing",
+          "description": "education, globe, leylines"
+        },
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "operatingSystem": "All"
+
+      }
+    </script>
 
     <!-- Leaflet -->
     <script>

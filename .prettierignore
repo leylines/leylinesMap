@@ -69,6 +69,13 @@ apps/terriamap/pancake/
 apps/terriamap/wwwroot/public/
 apps/terriamap/wwwroot/*.html
 
+# Leylines runtime configuration and legacy static help content are maintained
+# outside this repository in ../leylines-config or copied verbatim.
+apps/terriamap/wwwroot/config.json
+apps/terriamap/wwwroot/init/leylines*.json
+apps/terriamap/wwwroot/version.json
+apps/terriamap/wwwroot/favicons/site.webmanifest
+apps/terriamap/wwwroot/help/
+
 apps/terriamap/ckanext-cesiumpreview
 apps/terriamap/deploy/helm/terria/charts/terriamap/templates/
-

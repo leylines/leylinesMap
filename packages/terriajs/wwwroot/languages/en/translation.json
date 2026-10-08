@@ -34,7 +34,7 @@
       "content": "## Location search\n\nEnter a locality or address to easily locate a point of interest on the map."
     },
     "exploreMapDataButton": {
-      "content": "## Explore Digital Twin data\n\nBrowse the Terria Data Catalogue of available data and add it to the digital twin here. You can add multiple datasets at any one time, and you’ll see them listed down below in the Digital Twin Data panel."
+      "content": "## Explore Leylines data\n\nBrowse the Leylines Data Catalogue of available data and add it to the digital twin here. You can add multiple datasets at any one time, and you’ll see them listed down below in the Leylines Data panel."
     },
     "sidePanelUploadButton": {
       "content": "## Upload Data\n\nYou can upload your own data to the map to view it with other data sets. Upload a file or link to an existing online data set or data service. Supported data formats include CSV, GeoJSON, KML, GPX and CZML."
@@ -49,7 +49,7 @@
       "content": "## View controls\n\nHere you can change the view of the map. You can change the orientation of your view by using the outer ring, and you can tilt the camera angle using the inner ring. Double click to reset the view."
     },
     "mapNavigationSplitterIcon": {
-      "content": "## Compare\n\nA powerful feature of Terria is the ability to compare datasets using a split screen view. For datasets with a time-series component, such as satellite images, you can compare dates backwards and forwards in time by clicking on the date picker/selector."
+      "content": "## Compare\n\nA powerful feature of Leylines is the ability to compare datasets using a split screen view. For datasets with a time-series component, such as satellite images, you can compare dates backwards and forwards in time by clicking on the date picker/selector."
     }
   },
   "measure": {
@@ -319,7 +319,7 @@
   "helpPanel": {
     "btnText": "Help",
     "menuPaneTitle": "We're here to help",
-    "menuPaneBody": "Find useful tips on how to use TerriaJS by either checking the guides below or by contacting the team at [{{supportEmail}}]({{supportEmail}})",
+    "menuPaneBody": "Find useful tips on how to use Leylines by either checking the guides below or by contacting the team at [{{supportEmail}}]({{supportEmail}})",
     "promptMessage": "Find the Tour, how-to videos & other help content here",
     "dismissText": "Got it, thanks!",
     "takeTour": "Take the tour",

@@ -6,7 +6,7 @@ export const Loader = () => {
     <div
       className={Styles.loaderUi}
       style={{
-        backgroundColor: "#383F4D"
+        backgroundColor: "#000000"
       }}
     >
       <img src={globeGif} />

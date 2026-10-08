@@ -18,6 +18,10 @@ permissions:
 jobs:
   # This workflow contains a single job called "build"
   build:
+    # The Leylines fork has its own focused workflow in leylines-ci.yml. Keep
+    # the upstream TerriaJS browser-test workflow available for upstream syncs
+    # without running it in the Leylines repository.
+    if: github.repository_owner == 'TerriaJS'
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 

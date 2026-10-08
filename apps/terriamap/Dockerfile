@@ -10,10 +10,10 @@
 # `files` field is later added to package.json. If pnpm rejects `deploy`, add `--legacy`.
 
 # develop container
-FROM node:24 AS develop
+FROM node:22 AS develop
 
 # build container
-FROM node:24 AS build
+FROM node:22 AS build
 RUN corepack enable
 WORKDIR /repo
 # The base href the built map is served under. A normal image build defaults to "/";
@@ -29,9 +29,12 @@ RUN pnpm --filter terriajs-map exec gulp release --baseHref="$BASE_HREF"
 RUN pnpm --filter terriajs-map deploy --prod /prod/app
 
 # deploy container
-FROM node:24-slim AS deploy
+FROM node:22-slim AS deploy
 
-# terriajs-server registers no SIGTERM/SIGINT handlers, and node:24-slim has no init
+LABEL org.opencontainers.image.source="https://github.com/leylines/leylinesMap"
+LABEL org.opencontainers.image.description="Leylines Map"
+
+# terriajs-server registers no SIGTERM/SIGINT handlers, and node:22-slim has no init
 # system, so without tini as PID 1, `docker stop` (and Kubernetes' pod termination,
 # which works the same way) has nothing to catch the signal - the container just sits
 # until the grace period expires and it gets SIGKILLed. tini forwards the signal to

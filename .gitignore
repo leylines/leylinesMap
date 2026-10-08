@@ -13,6 +13,12 @@ ts-out/
 *.log
 npm-debug.log
 
+# Local environment and generated development backups
+.env
+.env.*
+!.env.example
+*.bak
+
 # Editor / OS
 .idea/
 .history/

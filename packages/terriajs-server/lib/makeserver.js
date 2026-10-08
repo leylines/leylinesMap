@@ -14,12 +14,14 @@ import proj4lookup from "./controllers/proj4lookup.js";
 import serverconfig from "./controllers/serverconfig.js";
 import * as errorPage from "./errorpage.js";
 import initfile from "./controllers/initfile.js";
+import api from "./api.js";
 import feedback from "./controllers/feedback.js";
 import share from "./controllers/share.js";
 import singlePageRouting from "./controllers/single-page-routing.js";
 import { makeOriginAllowlist } from "./controllers/origin-allowlist.js";
 import cspReport from "./controllers/csp-report.js";
 import { buildSecurityHeaders } from "./security-headers.js";
+import { refreshImageCache } from "./utils.js";
 
 /* Creates and returns a single express server. */
 export default function (options) {
@@ -46,6 +48,23 @@ export default function (options) {
   if (options.verbose) {
     app.use(morgan("dev"));
   }
+
+  // leylines api services
+  app.use(
+    "/api",
+    api({
+      pgUser: options.settings.pgUser,
+      pgPass: options.settings.pgPass,
+      pgHost: options.settings.pgHost,
+      pgPort: options.settings.pgPort,
+      pgDatabase: options.settings.pgDatabase
+    })
+  );
+
+  endpoint("/api/refresh-cache", (_req, res) => {
+    refreshImageCache();
+    res.send("Cache refreshed successfully!");
+  });
 
   if (typeof options.settings.trustProxy !== "undefined") {
     app.set("trust proxy", options.settings.trustProxy);

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 100 100"
+   version="1.1"
+   xmlns="http://www.w3.org/2000/svg">
+  <!-- Schwarzer Hintergrund mit goldenem Rand -->
+  <circle
+     cx="50"
+     cy="50"
+     r="48"
+     fill="black"
+     stroke="#FFD700"
+     stroke-width="4" />
+  <!-- Äußerer Ring -->
+  <circle
+     cx="50"
+     cy="50"
+     r="28"
+     fill="none"
+     stroke="#FFD700"
+     stroke-width="3" />
+  <!-- Innerer Kreis -->
+  <circle
+     cx="50"
+     cy="50"
+     r="14"
+     fill="none"
+     stroke="#FFD700"
+     stroke-width="3" />
+  <!-- Chevrons / Markierungen -->
+  <line x1="50" y1="20" x2="50" y2="25" stroke="#FFD700" stroke-width="3" />
+  <line x1="50" y1="75" x2="50" y2="80" stroke="#FFD700" stroke-width="3" />
+  <line x1="20" y1="50" x2="25" y2="50" stroke="#FFD700" stroke-width="3" />
+  <line x1="75" y1="50" x2="80" y2="50" stroke="#FFD700" stroke-width="3" />
+  <line x1="32" y1="32" x2="36" y2="36" stroke="#FFD700" stroke-width="3" />
+  <line x1="68" y1="68" x2="64" y2="64" stroke="#FFD700" stroke-width="3" />
+  <line x1="32" y1="68" x2="36" y2="64" stroke="#FFD700" stroke-width="3" />
+  <line x1="68" y1="32" x2="64" y2="36" stroke="#FFD700" stroke-width="3" />
+</svg>
+

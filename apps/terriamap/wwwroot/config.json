@@ -1,16 +1,19 @@
 {
   /* Names of init files (in wwwroot/init), without the .json extension, to load by default */
-  "initializationUrls": ["simple"],
+  "initializationUrls": ["leylines-stripped"],
   "parameters": {
     "googleUrlShortenerKey": null,
-    "googleAnalyticsKey": null,
+    "googleAnalyticsKey": "G-RX6Z0RY7W2",
     "googleAnalyticsOptions": null,
-    // Log ConsoleAnalytics events to console
-    // logToConsole: true,
-    /* Text that appears at the bottom of the map */
+    "bingMapsKey": "Ar2EmKvPSqMPwjLanIEHgtO-r8h0cBPrP2D0Rx_Ejqy22LvRl4UvqZor1xSTtq4G",
+    "useCesiumIonTerrain": true,
+    "cesiumIonAccessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJiY2MyZjMxNS01NjI0LTQ3MjMtOTM3MC01NTZiODZkOTdlZjgiLCJpZCI6MTA3LCJpYXQiOjE1MjU0MjA2ODd9.VX2WAx6oqH1yiSxA7heQYax9jhq_p1gBtd1IrRHKzko",
+
+    "aboutButtonHrefUrl": "https://www.leylines.net/maps/",
+
     "disclaimer": {
       "text": "Disclaimer: This map must not be used for navigation or precise spatial analysis",
-      "url": ""
+      "url": "https://www.leylines.net"
     },
     /*
         // Text that will be added to any pages printed from your site.
@@ -19,61 +22,78 @@
             url: "#"
         },
         */
+
     // Pop-up disclaimer that will be shown at the start
     // The text of the disclaimer is in lib/Views/GlobalDisclaimer.html
-    // globalDisclaimer: {
-    //     confirmationRequired: false,
-    //     buttonTitle: "I agree",
-    //     title: "Disclaimer",
-    //     // If the current browser location is not prod, or is dev, then show a "not the real site" warning.
-    //     // The text of that is in lib/Views/DevelopmentDisclaimerPreamble.html
-    //     //prodHostRegex: "gov.\\.au$",
-    //     //devHostRegex: "\\b(staging|preview|test|dev)\\.",
-    //     enableOnLocalhost: true // If false, don't show this when running on localhost
-    // },
-    /*
-        developerAttribution: {
-            text: "Your organisation",
-            link: "http://www.example.com"
-        },*/
+
+    "globalDisclaimer": {
+      "confirmationRequired": false,
+      "buttonTitle": "Got it",
+      "title": "Notice to Bing Maps and Google Maps",
+      //     // If the current browser location is not prod, or is dev, then show a "not the real site" warning.
+      //     // The text of that is in lib/Views/DevelopmentDisclaimerPreamble.html
+      //     //prodHostRegex: "gov.\\.au$",
+      //     //devHostRegex: "\\b(staging|preview|test|dev)\\.",
+      "enableOnLocalhost": true // If false, don't show this when running on localhost
+    },
+
+    "developerAttribution": {
+      "text": "Joerg Roth",
+      "link": "https://www.leylines.net"
+    },
+
+    "extraCreditLinks": [
+      {
+        "text": "map.extraCreditLinks.dataAttribution",
+        "url": "https://www.leylines.net/maps/attribution"
+      },
+      {
+        "text": "map.extraCreditLinks.termsOfUse",
+        "url": "https://www.leylines.net/maps/terms-and-conditions"
+      }
+    ],
+
     // This is used in various text messages. You should also set <title> in index.html
-    "appName": "Terria Map",
+    "appName": "Leylines Map",
+
     // See comments in lib/Views/global.scss for further information about customising colors, logos, fonts etc.
     "brandBarElements": [
       "",
-      "<a target=\"_blank\" href=\"https://terria.io\"><img src=\"images/terria_logo.png\" height=\"52\" title=\"Version: {{version}}\" /></a>",
+      "<a target=\"_blank\" href=\"https://www.leylines.net\"><img src=\"images/leylines-logo.svg\" height=\"52\" title=\"Version: {{version}}\" /></a>",
       ""
     ],
     // Shown when things go wrong.
-    "supportEmail": "help@example.com",
+    "supportEmail": "info@leylines.net",
     // You probably shouldn't change this.
     "proj4ServiceBaseUrl": "proj4def/",
     // Or this
     "feedbackUrl": "feedback",
+
     // Default mobile viewer mode when loading the map for the first time on mobile platforms.
     // Options are: "3DTerrain", "3DSmooth", "2D"
-    "mobileDefaultViewerMode": "2d",
+    "mobileDefaultViewerMode": "3DSmooth",
     // Enable experimental features, since its nice to have the bleeding edge.
     // Disable it if things go wrong with the experimental features or your users aren't robust to features which might change or disapear completly.
     "experimentalFeatures": true,
     // To enable welcome message when map first loads
-    // "showWelcomeMessage": true,
+    "showWelcomeMessage": true,
     // To override the welcome message video displayed on the welcome message
     // By default, the Getting Started to Terria video is displayed
-    // "welcomeMessageVideo": {
-    //     "videoTitle": "Getting started with the map",
-    //     "videoUrl": "https://www.youtube-nocookie.com/embed/NTtSM70rIvI", // use an embedded video link
-    //     "placeholderImage": "https://img.youtube.com/vi/NTtSM70rIvI/maxresdefault.jpg"
-    // },
+    "welcomeMessageVideo": {
+        "videoTitle": "Getting started with Leylines",
+        "videoUrl": "https://www.youtube-nocookie.com/embed/mA5Rw-bRyJI", // use an embedded video link
+        "placeholderImage": "https://img.youtube.com/vi/mA5Rw-bRyJI/maxresdefault.jpg"
+    },
+
     // True to display in-app guides.
     // "showInAppGuides": false,
+
     // see `languageOverrides.json` in languages/en
     "languageConfiguration": {
       "enabled": false,
       "debug": false,
       "languages": {
-        "en": "English",
-        "fr": "Français"
+        "en": "English"
       },
       "fallbackLanguage": "en"
     },
@@ -83,8 +103,10 @@
         "id": "search-provider/cesium-ion",
         "type": "cesium-ion-search-provider",
         "name": "translate#viewModels.searchLocations",
+        "url": "https://api.cesium.com/v1/geocode/search/",
         "flightDurationSeconds": 1.5,
-        "minCharacters": 3
+        "minCharacters": 5,
+        "isOpen": true
       }
     ],
     "helpContent": [
@@ -94,8 +116,14 @@
         "paneMode": "videoAndContent",
         "markdownText": "translate#gettingstarted.markdownText",
         "icon": "video",
-        "videoUrl": "translate#gettingstarted.videoUrl",
-        "placeholderImage": "translate#gettingstarted.placeholderImage"
+        "videoUrl": "https://www.youtube-nocookie.com/embed/mA5Rw-bRyJI",
+        "placeholderImage": "https://img.youtube.com/vi/mA5Rw-bRyJI/maxresdefault.jpg"
+      },
+      {
+        "icon": "story",
+        "itemName": "showmetheleys",
+        "markdownText": "## Show me the Leylines\n\n### A brief introduction to finding leylines\n\nThere are many different ideas about a global symmetrical grid of leylines. The best known is probably the [Planetary Grid](https://www.vortexhunters.com/the-planetary-grid.html) by William Becker and Bethe Hagens. But there are also other approaches. This website shows different approaches to solving the leyline puzzle. If you have your own idea and would like to display it on the globe, please contact <info@leylines.ch>.\n\n#### Global Leylines\n\n1. Use **Explore map data** to view the data catalogue\n2. Select **Leylines**\n3. Select **Global Leylines**\n4. To view the Planetary Grid, select **(m)UVG Grids**, then **Becker-Hagens UVG-Grid**\n5. Select the layers you would like to see\n\n#### Regional Leylines\n1. Use **Explore map data** to view the data catalogue\n2. Select **Leylines**\n3. Select **Regional Leylines**\n4. Select the Leylines you would like to see\n5. Use **ideal zoom** in the workbench to zoom to the leyline(s)\n\n#### Additional Notes\n1. Use **shift** and **+** to add a layer without closing the catalog\n2. The stars appearing on the lines are matching points from the **Points of Interest** catalog",
+        "title": "Show me the Leylines"
       },
       {
         "title": "translate#stepbystepguide.title",

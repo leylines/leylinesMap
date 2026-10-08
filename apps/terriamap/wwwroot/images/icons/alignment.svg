@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 100 100"
+   version="1.1"
+   id="svg2"
+   sodipodi:docname="alignment.svg"
+   inkscape:version="1.4.2 (ebf0e940, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="namedview2"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="8.26"
+     inkscape:cx="49.939467"
+     inkscape:cy="50"
+     inkscape:window-width="1752"
+     inkscape:window-height="1027"
+     inkscape:window-x="28"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <!-- Schwarzer Hintergrund mit goldenem Rand -->
+  <g
+     id="g2">
+    <circle
+       cx="50"
+       cy="50"
+       r="48"
+       fill="black"
+       stroke="#FFD700"
+       stroke-width="4"
+       id="circle1" />
+  </g>
+  <rect
+     x="45"
+     y="45"
+     width="10"
+     height="10"
+     fill="#000000"
+     id="rect1"
+     style="fill:#ffd700;fill-opacity:1;stroke-width:0.779208" />
+  <rect
+     x="-71.781296"
+     y="-66.079338"
+     width="7"
+     height="18"
+     fill="#000000"
+     id="rect2"
+     style="fill:#ffd700;fill-opacity:1"
+     transform="rotate(168.1697)" />
+  <rect
+     x="-104.11388"
+     y="-22.191084"
+     width="7"
+     height="18"
+     fill="#000000"
+     transform="rotate(-142.8195)"
+     id="rect3"
+     style="fill:#ffd700;fill-opacity:1" />
+  <rect
+     x="57.840466"
+     y="-70.760452"
+     width="7"
+     height="18"
+     fill="#000000"
+     transform="rotate(107.78645)"
+     id="rect4"
+     style="fill:#ffd700;fill-opacity:1" />
+  <rect
+     x="-20.944473"
+     y="-65.129761"
+     width="7"
+     height="18"
+     fill="#000000"
+     transform="rotate(176.60996)"
+     id="rect5"
+     style="fill:#ffd700;fill-opacity:1" />
+  <rect
+     x="37.922848"
+     y="-6.9840927"
+     width="7"
+     height="18"
+     fill="#000000"
+     transform="matrix(0.7830689,0.62193496,-0.63125991,0.77557136,0,0)"
+     id="rect6"
+     style="fill:#ffd700;fill-opacity:1;stroke-width:1.00004" />
+  <rect
+     x="-9.2559099"
+     y="54.143208"
+     width="7"
+     height="18"
+     fill="#000000"
+     transform="rotate(-75.243959)"
+     id="rect7"
+     style="fill:#ffd700;fill-opacity:1" />
+  <!-- Felsenformation -->
+  <!-- Zusätzlicher kleiner Felsen -->
+</svg>

@@ -187,7 +187,7 @@ const StyledLi = styled(Li)`
   border: 1px solid ${(p) => p.theme.grey};
   width: 100%;
 
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   &:last-child {
     margin-bottom: 0px;
   }

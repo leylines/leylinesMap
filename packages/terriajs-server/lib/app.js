@@ -1,6 +1,13 @@
 import exists from "./exists.js";
 import options from "./options.js";
 import makeserver from "./makeserver.js";
+import cron from "node-cron";
+import { refreshImageCache } from "./utils.js";
+
+cron.schedule("0 4 * * *", () => {
+  console.log("Running daily Image Cache refresh...");
+  refreshImageCache();
+});
 
 options.init(false);
 
@@ -27,6 +34,8 @@ if (typeof options.settings.allowProxyFor === "undefined") {
     'The configuration does not contain a "allowProxyFor" list.  The server will proxy _any_ request.'
   );
 }
+
+refreshImageCache();
 
 const server = makeserver(options).listen(options.port, options.listenHost);
 

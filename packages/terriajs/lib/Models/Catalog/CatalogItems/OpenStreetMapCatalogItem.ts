@@ -70,10 +70,20 @@ export default class OpenStreetMapCatalogItem extends MappableMixin(
       templateUrl.hostname(`{s}.${templateUrl.hostname()}`);
     }
 
+    let key = "";
+    if (this.auth_token) {
+      key = this.auth_token;
+    }
+
     const path = templateUrl.path();
     const sep = path[path.length - 1] === "/" ? "" : "/";
     templateUrl.path(`${path}${sep}{z}/{x}/{y}.${this.fileExtension}`);
-    return decodeURI(templateUrl.toString());
+    if (key) {
+      return decodeURI(templateUrl.toString() + `?key=${key}`);
+      //return decodeURI(templateUrl.toString());
+    } else {
+      return decodeURI(templateUrl.toString());
+    }
   }
 }
 

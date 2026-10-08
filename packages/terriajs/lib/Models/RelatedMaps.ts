@@ -7,27 +7,29 @@ export interface RelatedMap {
 
 export const defaultRelatedMaps: RelatedMap[] = [
   {
-    imageUrl:
-      "https://terria-catalogs-public.storage.googleapis.com/misc/related-maps/vic-dt.jpg",
-    url: "https://vic.digitaltwin.terria.io/",
-    title: "Digital Twin Victoria",
+    imageUrl: "images/related/megalithic_logo_150.gif",
+    url: "https://www.megalithic.co.uk",
+    title: "The Megalithic Portal",
     description:
-      "The Digital Twin Victoria (DTV) platform is the most comprehensive digital model ever assembled for Victoria. It brings together masses of 2D, 3D and live data in a single online place open for everyone to use. The DTV platform is one part of the $37.4 million Digital Twin Victoria Program."
+      "The top destination for Megaliths and Prehistory worldwide. World-wide Ancient Site Database, Photos and Prehistoric Archaeology News with geolocation."
   },
   {
-    imageUrl:
-      "https://terria-catalogs-public.storage.googleapis.com/misc/related-maps/nsw-dt.png",
-    url: "https://nsw.digitaltwin.terria.io/",
-    title: "NSW Spatial Digital Twin",
-    description:
-      "The NSW Spatial Digital Twin aims to respond to the NSW State Infrastructure Strategy by developing a 4D (3D+time) Foundation Spatial Data Framework. The goal is to help the NSW Government with infrastructure assets planning and management, integration with land use planning, data collaboration, and sharing."
+    imageUrl: "images/related/ramar_small.png",
+    url: "https://ramar.space",
+    title: "RAMAR",
+    description: "Research of Ancient Mysteries and Anomalies for Reevauation."
   },
   {
-    imageUrl:
-      "https://terria-catalogs-public.storage.googleapis.com/misc/related-maps/dea.png",
-    url: "https://maps.dea.ga.gov.au/",
-    title: "Digital Earth Australia",
+    imageUrl: "images/related/vortexmaps-logo-web.jpg",
+    url: "https://www.vortexmaps.com",
+    title: "Vortex Maps",
     description:
-      "Digital Earth Australia (DEA) Map is a website for map-based access to DEA’s products, developed by Data61 CSIRO for Geoscience Australia. DEA uses satellite data to detect physical changes across Australia in unprecedented detail. It identifies soil and coastal erosion, crop growth, water quality and changes to cities and regions."
+      "Maps of vortexes around the world. Learn how to map vortexes in your area."
+  },
+  {
+    imageUrl: "images/related/antarctica.png",
+    url: "https://antarctica.hidden-history.ch",
+    title: "Antarctica and beyond",
+    description: "Map and Timeline of Antarctica"
   }
 ];

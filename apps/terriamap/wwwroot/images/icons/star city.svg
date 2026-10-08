@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 100 100"
+   version="1.1"
+   xmlns="http://www.w3.org/2000/svg">
+  <!-- Schwarzer Hintergrund mit goldenem Rand -->
+  <circle
+     cx="50"
+     cy="50"
+     r="48"
+     fill="black"
+     stroke="#FFD700"
+     stroke-width="4" />
+  
+  <!-- Stern -->
+  <path
+     d="M50,20 
+        L54,34 
+        L69,34 
+        L57,43 
+        L61,58 
+        L50,49 
+        L39,58 
+        L43,43 
+        L31,34 
+        L46,34 Z"
+     fill="none"
+     stroke="#FFD700"
+     stroke-width="3"
+     stroke-linejoin="round" />
+  
+  <!-- Skyline -->
+  <rect
+     x="35"
+     y="65"
+     width="6"
+     height="12"
+     fill="none"
+     stroke="#FFD700"
+     stroke-width="3"/>
+  <rect
+     x="47"
+     y="60"
+     width="6"
+     height="17"
+     fill="none"
+     stroke="#FFD700"
+     stroke-width="3"/>
+  <rect
+     x="59"
+     y="68"
+     width="6"
+     height="9"
+     fill="none"
+     stroke="#FFD700"
+     stroke-width="3"/>
+</svg>
+

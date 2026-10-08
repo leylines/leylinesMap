@@ -1,0 +1,30 @@
+name: Leylines CI
+
+on: [push, pull_request]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --max_old_space_size=4096
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Lint Leylines packages
+        run: pnpm --filter terriajs-server lint && pnpm --filter terriajs-map lint
+      - name: Build Leylines Map
+        run: pnpm --filter terriajs-map exec gulp release
+      - name: Test TerriaJS Server
+        run: pnpm --filter terriajs-server test
