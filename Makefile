@@ -2,6 +2,7 @@
 
 APP_DIR := apps/terriamap
 CONFIG_DIR := ../leylines-config
+DATA_DIR := ../leylines-geodata
 
 dev: dev-config
 	pnpm dev
@@ -25,6 +26,8 @@ dev-config:
 		if [ ! -L "$$target" ] && [ -e "$$target" ] && [ ! -e "$$target.bak" ]; then mv "$$target" "$$target.bak"; fi; \
 		rm -f "$$target"; ln -s "$$source" "$$target"; \
 	done
+	@rm -rf $(APP_DIR)/wwwroot/leylines-geodata
+	@ln -s $(abspath $(DATA_DIR)) $(APP_DIR)/wwwroot/leylines-geodata
 
 clean-dev:
 	@echo "Restoring repository configuration files..."
@@ -42,6 +45,9 @@ clean-dev:
 		if [ -L "$$target" ]; then rm -f "$$target"; fi; \
 		if [ -e "$$target.bak" ]; then rm -f "$$target"; mv "$$target.bak" "$$target"; fi; \
 	done
+	@rm $(APP_DIR)/wwwroot/leylines-geodata
+	@mkdir $(APP_DIR)/wwwroot/leylines-geodata
+	@touch $(APP_DIR)/wwwroot/leylines-geodata/.gitkeep
 
 prod-config:
 	@echo "Setting the shared server configuration to the Docker database host..."
