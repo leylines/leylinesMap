@@ -1,5 +1,5 @@
 import i18next, { keyFromSelector } from "i18next";
-import { isEqual } from "lodash-es";
+import { isEqual, throttle } from "lodash-es";
 import {
   action,
   autorun,
@@ -67,6 +67,10 @@ import flatten from "../Core/flatten";
 import isDefined from "../Core/isDefined";
 import LatLonHeight from "../Core/LatLonHeight";
 import pollToPromise from "../Core/pollToPromise";
+import {
+  getQualityTierFraction,
+  isLowSpecQualityTier as isLowSpecQualityTierOf
+} from "../Core/QualityTier";
 import TerriaError from "../Core/TerriaError";
 import waitForDataSourceToLoad from "../Core/waitForDataSourceToLoad";
 import CesiumRenderLoopPauser from "../Map/Cesium/CesiumRenderLoopPauser";
@@ -86,6 +90,7 @@ import MappableMixin, {
   isTerrainProvider,
   MapItem
 } from "../ModelMixins/MappableMixin";
+import ShadowMixin from "../ModelMixins/ShadowMixin";
 import TileErrorHandlerMixin from "../ModelMixins/TileErrorHandlerMixin";
 import OpacityTraits from "../Traits/TraitsClasses/OpacityTraits";
 import SplitterTraits from "../Traits/TraitsClasses/SplitterTraits";
@@ -154,23 +159,36 @@ export default class Cesium extends GlobeOrMap {
   // over the LEFT_CLICK behavior.
   isFeaturePickingPaused = false;
 
+  // When defined, overrides the quality slider's low-spec shadow toggle -
+  // for features (e.g. a sunlight/shadow-analysis tool) with a hard
+  // dependency on scene.shadowMap that must force it on regardless of tier.
+  @observable
+  private shadowsOverrideEnabled: boolean | undefined = undefined;
+
   /* Disposers */
   private readonly _selectionIndicator: CesiumSelectionIndicator;
   private readonly _disposeSelectedFeatureSubscription: () => void;
   private readonly _disposeWorkbenchMapItemsSubscription: () => void;
   private readonly _disposeTerrainReaction: () => void;
   private readonly _disposeSplitterReaction: () => void;
-  private readonly _disposeResolutionReaction: () => void;
   private readonly _disposeBaseMapOpacityReaction: () => void;
+  private readonly _disposeQualityReaction: () => void;
 
   private _createImageryLayer: (
     ip: ImageryProvider,
-    clippingRectangle: Rectangle | undefined
-  ) => ImageryLayer = computedFn((ip, clippingRectangle) => {
+    clippingRectangle: Rectangle | undefined,
+    generation: number
+  ) => ImageryLayer = computedFn((ip, clippingRectangle, _generation) => {
     return new ImageryLayer(ip, {
       rectangle: clippingRectangle
     });
   });
+
+  /**
+   * Bumped for a provider when its memoised ImageryLayer has been destroyed,
+   * so that the next call to `_createImageryLayer` misses the cache.
+   */
+  private _imageryLayerGenerations = new WeakMap<ImageryProvider, number>();
 
   private _terrainMessageViewed: boolean = false;
 
@@ -286,18 +304,27 @@ export default class Cesium extends GlobeOrMap {
     //     },
     //     ScreenSpaceEventType.LEFT_DOUBLE_CLICK, KeyboardEventModifier.SHIFT);
 
-    // Handle mouse move
-    inputHandler.setInputAction((e: ScreenSpaceEventHandler.MotionEvent) => {
-      this.mouseCoords.updateCoordinatesFromCesium(this.terria, e.endPosition);
-    }, ScreenSpaceEventType.MOUSE_MOVE);
-
-    inputHandler.setInputAction(
+    // Throttle mouse move updates to 30/sec. Cesium can emit MOUSE_MOVE much
+    // more frequently than that on high refresh rate devices and each update
+    // performs terrain and (optionally) scene picking.
+    const throttledCoordinatesUpdate = throttle(
       (e: ScreenSpaceEventHandler.MotionEvent) => {
         this.mouseCoords.updateCoordinatesFromCesium(
           this.terria,
           e.endPosition
         );
       },
+      1000 / 30
+    );
+
+    // Handle mouse move
+    inputHandler.setInputAction(
+      throttledCoordinatesUpdate,
+      ScreenSpaceEventType.MOUSE_MOVE
+    );
+
+    inputHandler.setInputAction(
+      throttledCoordinatesUpdate,
       ScreenSpaceEventType.MOUSE_MOVE,
       KeyboardEventModifier.SHIFT
     );
@@ -441,11 +468,20 @@ export default class Cesium extends GlobeOrMap {
     });
     this._disposeSplitterReaction = this._reactToSplitterChanges();
 
-    this._disposeResolutionReaction = autorun(() => {
+    this._disposeQualityReaction = autorun(() => {
       (this.cesiumWidget as any).useBrowserRecommendedResolution =
         !this.terria.useNativeResolution;
       this.cesiumWidget.scene.globe.maximumScreenSpaceError =
         this.terria.baseMaximumScreenSpaceError;
+
+      const lowSpec = this.isLowSpecQualityTier;
+
+      this.cesiumWidget.resolutionScale = this.qualityResolutionScale;
+      this.scene.globe.tileCacheSize = this.qualityTileCacheSize;
+      this.scene.globe.preloadAncestors = !lowSpec;
+      this.scene.globe.preloadSiblings = false;
+      this.scene.fog.density = this.qualityFogDensity;
+      this.scene.shadowMap.enabled = this.effectiveShadowsEnabled;
     });
 
     this._disposeBaseMapOpacityReaction = reaction(
@@ -455,6 +491,101 @@ export default class Cesium extends GlobeOrMap {
         fireImmediately: true
       }
     );
+  }
+
+  /** True if some workbench item's own `shadows` trait asks for cast/receive
+   * shadows, even though the quality slider's low-spec tier may currently be
+   * forcing scene.shadowMap off for all datasets. */
+  @computed
+  private get hasShadowRequestingWorkbenchItem(): boolean {
+    return this.terria.workbench.items.some(
+      (item) => ShadowMixin.isMixedInto(item) && item.shadows !== "NONE"
+    );
+  }
+
+  /** Whether scene.shadowMap is actually enabled right now, once
+   * `shadowsOverrideEnabled` (see `enableShadowsOverride()`) is taken into
+   * account - the single source of truth `notifyIfShadowsSuppressed()`
+   * checks against, rather than re-deriving the low-spec tier itself. */
+  @computed
+  private get effectiveShadowsEnabled(): boolean {
+    return this.shadowsOverrideEnabled ?? !this.isLowSpecQualityTier;
+  }
+
+  /**
+   * Shows a toast telling the user shadows are currently suppressed, if some
+   * workbench item's own `shadows` trait wants them but scene.shadowMap is
+   * off right now. This is deliberately *not* wired up as a passive reaction
+   * to state changes (which would either spam the user on every unrelated
+   * recompute, or - if de-duplicated - silently miss a genuine new change
+   * that doesn't flip the overall boolean, e.g. turning on shadows for one
+   * item while another item already has them on). Instead, call this
+   * directly from every user-facing action that could create or reveal the
+   * mismatch: the quality slider (`SettingPanel.tsx`), the per-item shadow
+   * dropdown (`ShadowMixin.ts`), and - once built - the sunlight/viewshed
+   * tool's own activate/deactivate actions alongside
+   * `enableShadowsOverride()`/`clearShadowsOverride()`.
+   */
+  notifyIfShadowsSuppressed(): void {
+    if (
+      this.effectiveShadowsEnabled ||
+      !this.hasShadowRequestingWorkbenchItem
+    ) {
+      return;
+    }
+    this.terria.notificationState.addNotificationToQueue({
+      title: i18next.t(($) => $.models.shadowsDisabledForPerformance.title),
+      message: i18next.t(($) => $.models.shadowsDisabledForPerformance.message),
+      showAsToast: true,
+      ignore: () =>
+        this.effectiveShadowsEnabled || !this.hasShadowRequestingWorkbenchItem
+    });
+  }
+
+  @computed
+  private get isLowSpecQualityTier(): boolean {
+    return isLowSpecQualityTierOf(this.terria.baseMaximumScreenSpaceError);
+  }
+
+  @computed
+  private get qualityTierFraction(): number {
+    return getQualityTierFraction(this.terria.baseMaximumScreenSpaceError);
+  }
+
+  @computed
+  private get qualityResolutionScale(): number {
+    return 1.0 - 0.25 * this.qualityTierFraction;
+  }
+
+  @computed
+  private get qualityTileCacheSize(): number {
+    return Math.round(100 - 50 * this.qualityTierFraction);
+  }
+
+  @computed
+  private get qualityFogDensity(): number {
+    return 0.0006 + 0.0006 * this.qualityTierFraction;
+  }
+
+  /**
+   * Forces shadows on regardless of the quality slider's low-spec tier.
+   * Intended for features (e.g. a sunlight/shadow-analysis tool) with a
+   * hard functional dependency on scene.shadowMap.
+   */
+  @action
+  enableShadowsOverride(): void {
+    this.shadowsOverrideEnabled = true;
+  }
+
+  /**
+   * Hands shadow control back to the quality slider. If the slider is still
+   * in its low-spec tier, this may immediately re-suppress shadows for a
+   * workbench item that wants them - callers should follow this with
+   * `notifyIfShadowsSuppressed()` to tell the user if that just happened.
+   */
+  @action
+  clearShadowsOverride(): void {
+    this.shadowsOverrideEnabled = undefined;
   }
 
   get dataSources(): DataSourceCollection {
@@ -644,7 +775,7 @@ export default class Cesium extends GlobeOrMap {
     this._updateTilesLoadingIndeterminate(false); // reset progress bar loading state to false for any data sources with indeterminate progress e.g. 3DTilesets.
 
     this._disposeTerrainReaction();
-    this._disposeResolutionReaction();
+    this._disposeQualityReaction();
 
     this._disposeSelectedFeatureSubscription();
     this._disposeSplitterReaction();
@@ -1352,6 +1483,17 @@ export default class Cesium extends GlobeOrMap {
     ignoreSplitter: boolean
   ): Promise<void> {
     const pickRay = this.scene.camera.getPickRay(screenPosition);
+
+    // There is a subtle bug in Cesium - `pickPosition` must be called before
+    // `drillPick` if both happen in the same render frame, otherwise
+    // `pickPosition` returns a point on the ground instead of the position on
+    // the scene features.
+    // https://community.cesium.com/t/result-of-pickposition-changes-after-call-to-drillpick/12226/2
+    const mapInteractionMode = this.terria.mapInteractionModeStack.at(-1);
+    const scenePosition = mapInteractionMode?.enableScenePicking
+      ? this.scene.pickPosition(screenPosition)
+      : undefined;
+
     const pickPosition = isDefined(pickRay)
       ? this.scene.globe.pick(pickRay, this.scene)
       : undefined;
@@ -1375,15 +1517,14 @@ export default class Cesium extends GlobeOrMap {
       ignoreSplitter
     );
 
-    const mapInteractionModeStack = this.terria.mapInteractionModeStack;
     runInAction(() => {
-      if (
-        isDefined(mapInteractionModeStack) &&
-        mapInteractionModeStack.length > 0
-      ) {
-        mapInteractionModeStack[
-          mapInteractionModeStack.length - 1
-        ].pickedFeatures = result;
+      if (mapInteractionMode) {
+        result.scenePosition = scenePosition;
+        mapInteractionMode.pickedFeatures = result;
+        mapInteractionMode.pickEvent.raiseEvent({
+          globePosition: result.pickPosition,
+          scenePosition
+        });
       } else {
         this.terria.pickedFeatures = result;
       }
@@ -1513,11 +1654,19 @@ export default class Cesium extends GlobeOrMap {
           vectorFeatures.length < catalogItem.maxRequests
         );
         if (result) {
-          if (Array.isArray(result)) {
-            vectorFeatures.push(...result);
-          } else {
-            vectorFeatures.push(result);
+          const results = Array.isArray(result) ? result : [result];
+          // `buildFeatureFromPickResult` implementations build the feature from
+          // the pick result's entity and discard its primitive, but the
+          // primitive is what carries the terrain-clamped position. Without it
+          // the selection indicator falls back to the feature's own position,
+          // which for 2D source coordinates sits on the ellipsoid, below the
+          // pixel that was clicked.
+          if (picked.primitive) {
+            results.forEach((feature) => {
+              feature.cesiumPrimitive ??= picked.primitive;
+            });
           }
+          vectorFeatures.push(...results);
         }
       } else if (id instanceof Entity && vectorFeatures.indexOf(id) === -1) {
         const feature = TerriaFeature.fromEntityCollectionOrEntity(id);
@@ -1722,10 +1871,22 @@ export default class Cesium extends GlobeOrMap {
   ): ImageryLayer | undefined {
     if (parts.imageryProvider === undefined) return undefined;
 
-    const layer = this._createImageryLayer(
-      parts.imageryProvider,
-      parts.clippingRectangle
+    const ip = parts.imageryProvider;
+    let generation = this._imageryLayerGenerations.get(ip) ?? 0;
+    let layer = this._createImageryLayer(
+      ip,
+      parts.clippingRectangle,
+      generation
     );
+    if (
+      this.terria.configParameters.nextExperimentalFeatures
+        ?.imageryLayerGuard &&
+      layer.isDestroyed()
+    ) {
+      generation++;
+      this._imageryLayerGenerations.set(ip, generation);
+      layer = this._createImageryLayer(ip, parts.clippingRectangle, generation);
+    }
     if (TileErrorHandlerMixin.isMixedInto(item)) {
       // because this code path can run multiple times, make sure we remove the
       // handler if it is already registered
