@@ -53,11 +53,26 @@ export default class OpenStreetMapCatalogItemTraits extends mixTraits(
   })
   subdomains: string[] = [];
 
-  /** TODO: Make this camel case please */
   @primitiveTrait({
     type: "string",
-    name: "Authorization token",
-    description: "The authorization token to pass to the Carto Maps API"
+    name: "API key",
+    description: "API key to append to tile requests."
+  })
+  apiKey?: string;
+
+  @primitiveTrait({
+    type: "string",
+    name: "API key parameter",
+    description:
+      "Name of the query parameter used to pass apiKey to the tile service."
+  })
+  apiKeyParameter = "key";
+
+  @primitiveTrait({
+    type: "string",
+    name: "Legacy authorization token",
+    description:
+      "Deprecated alias for apiKey, retained for compatibility with existing catalogs."
   })
   auth_token?: string;
 }

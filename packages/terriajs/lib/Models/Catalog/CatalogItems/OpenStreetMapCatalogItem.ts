@@ -50,7 +50,7 @@ export default class OpenStreetMapCatalogItem extends MappableMixin(
     }
 
     return new UrlTemplateImageryProvider({
-      url: cleanAndProxyUrl(this, this.templateUrl),
+      url: proxyCatalogItemUrl(this, this.templateUrl),
       subdomains: this.subdomains.slice(),
       credit: this.attribution,
       maximumLevel: this.maximumLevel ?? 25,
@@ -70,30 +70,17 @@ export default class OpenStreetMapCatalogItem extends MappableMixin(
       templateUrl.hostname(`{s}.${templateUrl.hostname()}`);
     }
 
-    let key = "";
-    if (this.auth_token) {
-      key = this.auth_token;
-    }
-
     const path = templateUrl.path();
     const sep = path[path.length - 1] === "/" ? "" : "/";
     templateUrl.path(`${path}${sep}{z}/{x}/{y}.${this.fileExtension}`);
-    if (key) {
-      return decodeURI(templateUrl.toString() + `?key=${key}`);
-      //return decodeURI(templateUrl.toString());
-    } else {
-      return decodeURI(templateUrl.toString());
+
+    // Keep auth_token for compatibility with existing Leylines catalogs, but
+    // prefer the provider-neutral camelCase trait for new catalog entries.
+    const apiKey = this.apiKey ?? this.auth_token;
+    if (isDefined(apiKey) && apiKey.length > 0) {
+      templateUrl.setQuery(this.apiKeyParameter, apiKey);
     }
+
+    return decodeURI(templateUrl.toString());
   }
-}
-
-function cleanAndProxyUrl(catalogItem: any, url: string) {
-  return proxyCatalogItemUrl(catalogItem, cleanUrl(url));
-}
-
-function cleanUrl(url: string) {
-  // Strip off the search portion of the URL
-  const uri = new URI(url);
-  uri.search("");
-  return decodeURI(url.toString());
 }

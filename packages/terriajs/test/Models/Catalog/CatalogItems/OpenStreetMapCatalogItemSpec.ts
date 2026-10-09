@@ -38,6 +38,41 @@ describe("OpenStreetMapCatalogItem", function () {
         "https://{s}.example.com/ooo/{z}/{x}/{y}.png"
       );
     });
+
+    it("appends and encodes an API key", function () {
+      runInAction(() => {
+        item.setTrait("definition", "url", `${testUrl}?style=light`);
+        item.setTrait("definition", "apiKey", "abc+123/=");
+        item.setTrait("definition", "apiKeyParameter", "api_key");
+      });
+
+      expect(item.templateUrl).toBe(
+        "https://example.com/ooo/{z}/{x}/{y}.png?style=light&api_key=abc%2B123%2F%3D"
+      );
+    });
+
+    it("supports the legacy auth_token trait", function () {
+      runInAction(() => {
+        item.setTrait("definition", "url", testUrl);
+        item.setTrait("definition", "auth_token", "legacy-token");
+      });
+
+      expect(item.templateUrl).toBe(
+        "https://example.com/ooo/{z}/{x}/{y}.png?key=legacy-token"
+      );
+    });
+
+    it("prefers apiKey over the legacy auth_token trait", function () {
+      runInAction(() => {
+        item.setTrait("definition", "url", testUrl);
+        item.setTrait("definition", "apiKey", "new-token");
+        item.setTrait("definition", "auth_token", "legacy-token");
+      });
+
+      expect(item.templateUrl).toBe(
+        "https://example.com/ooo/{z}/{x}/{y}.png?key=new-token"
+      );
+    });
   });
 
   describe("after loading", function () {
