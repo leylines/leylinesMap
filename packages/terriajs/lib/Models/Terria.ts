@@ -15,6 +15,8 @@ import CesiumEvent from "terriajs-cesium/Source/Core/Event";
 import RequestScheduler from "terriajs-cesium/Source/Core/RequestScheduler";
 import RuntimeError from "terriajs-cesium/Source/Core/RuntimeError";
 import TerrainProvider from "terriajs-cesium/Source/Core/TerrainProvider";
+import createWorldTerrainAsync from "terriajs-cesium/Source/Core/createWorldTerrainAsync";
+import Ion from "terriajs-cesium/Source/Core/Ion";
 import buildModuleUrl from "terriajs-cesium/Source/Core/buildModuleUrl";
 import defined from "terriajs-cesium/Source/Core/defined";
 import queryToObject from "terriajs-cesium/Source/Core/queryToObject";
@@ -137,6 +139,18 @@ export interface NextExperimentalFeatures {
    * instead. Defaults to true; set to false to disable the item as before.
    */
   keepLayersOnMissingTiles?: boolean;
+  /**
+   * Show the map as soon as it can draw, and load the rest progressively.
+   * Defaults to false. When true:
+   * - language files and the server config load in parallel
+   * - Cesium world terrain starts loading as soon as config asks for it, and
+   *   the globe is held back until it's ready instead of swapping it in
+   * - an `initialCamera` applied while restoring app state is jumped to rather
+   *   than flown to, as the map may already be on screen
+   * - the bare globe is a muted ocean colour instead of blue
+   * Applications can also use it to show their UI before restoring app state.
+   */
+  progressiveLoading?: boolean;
 }
 
 export interface ConfigParameters {
@@ -802,6 +816,11 @@ export default class Terria {
       false
     );
   }
+  /** True once `start` has restored the app state from the URL. */
+  @observable private _appStateRestored = false;
+
+  private _preloadedWorldTerrain: Promise<TerrainProvider> | undefined;
+
   @observable storyPromptShown: number = 0; // Story Prompt modal will be rendered when this property changes. See StandardUserInterface, section regarding sui.notifications. Ideally move this to ViewState.
 
   /**
@@ -1016,6 +1035,16 @@ export default class Terria {
     }
   }
 
+  /**
+   * Free a model's ID without removing it from the workbench.
+   */
+  @action
+  unregisterModel(model: BaseModel): void {
+    if (model.uniqueId && this.models.get(model.uniqueId) === model) {
+      this.models.delete(model.uniqueId);
+    }
+  }
+
   @action
   removeSelectedFeaturesForModel(model: BaseModel): void {
     const pickedFeatures = this.pickedFeatures;
@@ -1185,15 +1214,18 @@ export default class Terria {
         message: `Couldn't load configuration`,
         severity: TerriaErrorSeverity.Error
       });
-    } finally {
-      if (!options.i18nOptions?.skipInit) {
-        await Internationalization.initLanguage(
+    }
+    this.preloadWorldTerrain();
+    // Language init and server config don't depend on each other, so with
+    // progressive loading they load in parallel rather than back to back.
+    const languageInitialized = options.i18nOptions?.skipInit
+      ? Promise.resolve()
+      : Internationalization.initLanguage(
           this.configParameters.languageConfiguration,
           options.i18nOptions,
           this.baseUrl
         );
-      }
-    }
+    if (!this.progressiveLoading) await languageInitialized;
     setCustomRequestSchedulerDomainLimits(
       this.configParameters.customRequestSchedulerLimits
     );
@@ -1215,9 +1247,10 @@ export default class Terria {
       launchUrlForAnalytics
     );
     this.serverConfig = new ServerConfig();
-    const serverConfig = await this.serverConfig.init(
-      this.configParameters.serverConfigUrl
-    );
+    const [, serverConfig] = await Promise.all([
+      languageInitialized,
+      this.serverConfig.init(this.configParameters.serverConfigUrl)
+    ]);
     await this.initCorsProxy(this.configParameters, serverConfig);
     if (this.shareDataService && this.serverConfig.config) {
       this.shareDataService.init(this.serverConfig.config);
@@ -1264,7 +1297,61 @@ export default class Terria {
       }
     }
 
-    await this.restoreAppState(options);
+    try {
+      await this.restoreAppState(options);
+    } finally {
+      runInAction(() => {
+        this._appStateRestored = true;
+      });
+    }
+  }
+
+  /**
+   * Starts loading Cesium world terrain as soon as config says it's needed, so
+   * the Cesium viewer can start with it rather than swapping it in later.
+   * Swapping terrain in discards every globe tile, blanking the globe.
+   */
+  private preloadWorldTerrain() {
+    const config = this.configParameters;
+    if (
+      typeof window === "undefined" ||
+      !this.progressiveLoading ||
+      !config.useCesiumIonTerrain ||
+      config.cesiumTerrainAssetId !== undefined ||
+      config.cesiumTerrainUrl
+    ) {
+      return;
+    }
+    if (config.cesiumIonAccessToken !== undefined) {
+      Ion.defaultAccessToken = config.cesiumIonAccessToken;
+    }
+    this._preloadedWorldTerrain = createWorldTerrainAsync({});
+    // Failures surface when a viewer takes the promise
+    this._preloadedWorldTerrain.catch(() => {});
+  }
+
+  /**
+   * Whether the progressively loaded UI should show loading states: until
+   * `start` has restored app state, and while init sources load after that.
+   */
+  get isProgressivelyLoading(): boolean {
+    return (
+      this.progressiveLoading &&
+      (!this._appStateRestored || this.isLoadingInitSources)
+    );
+  }
+
+  /** Whether the `progressiveLoading` experimental feature is on. */
+  get progressiveLoading(): boolean {
+    return (
+      this.configParameters.nextExperimentalFeatures?.progressiveLoading ===
+      true
+    );
+  }
+
+  /** Cesium world terrain requested during `start`, if config asked for it. */
+  get preloadedWorldTerrain(): Promise<TerrainProvider> | undefined {
+    return this._preloadedWorldTerrain;
   }
 
   private async restoreAppState(options: StartOptions) {
@@ -1662,6 +1749,15 @@ export default class Terria {
           if (typeof containerId !== "string") {
             return;
           }
+          // Skip containers that weren't saved and can't be found, e.g. transient search groups
+          if (
+            allModelStratumData[containerId] === undefined &&
+            (
+              await this.getModelByIdShareKeyOrCatalogIndex(containerId)
+            ).ignoreError() === undefined
+          ) {
+            return;
+          }
           try {
             const container = (
               await this.loadModelStratum(
@@ -1863,9 +1959,18 @@ export default class Terria {
       errors.push(...modelErrorList);
       (await model.loadMembers()).pushErrorTo(errors);
 
-      model.memberModels.map(async (m) => {
-        await this.pushAndLoadMapItems(m, context);
-      });
+      const memberModels = model.memberModels;
+      // preserve order
+      const memberBuckets: BaseModel[][] = memberModels.map(() => []);
+      await Promise.all(
+        memberModels.map((m, i) =>
+          this.pushAndLoadMapItems(m, {
+            ...context,
+            newItems: memberBuckets[i]
+          })
+        )
+      );
+      newItems.push(...memberBuckets.flat());
     } else if (MappableMixin.isMixedInto(model)) {
       addItem(model, modelErrorList);
       (await model.loadMapItems()).pushErrorTo(modelErrorList);
@@ -2025,7 +2130,13 @@ export default class Terria {
         // - If there are multiple initSources, the setting from the last source takes effect
         try {
           const initialCamera = CameraView.fromJson(initData.initialCamera);
-          this.currentViewer.zoomTo(initialCamera, 2.0);
+          // Jump straight to the camera while restoring at start up: an
+          // application may already be showing the map, and a flight from the
+          // home view would be cut short (and reject) when a story starts.
+          this.currentViewer.zoomTo(
+            initialCamera,
+            this.progressiveLoading && !this._appStateRestored ? 0.0 : 2.0
+          );
           // reset in case this was enabled by a previous initSource
           this.focusWorkbenchItemsAfterLoadingInitSources = false;
         } catch (error) {
@@ -2156,22 +2267,21 @@ export default class Terria {
       );
       const newItemsRaw = Array.from(new Set(workbenchModels));
 
-      // Maintain the model order in the workbench.
-      for (;;) {
-        const model = newItemsRaw.shift();
-        if (model) {
-          await applyPartAsync(`workbench item \`${model.uniqueId}\``, () =>
+      // Load every workbench item concurrently preserving order
+      const newItemBuckets: BaseModel[][] = newItemsRaw.map(() => []);
+      await Promise.all(
+        newItemsRaw.map((model, i) =>
+          applyPartAsync(`workbench item \`${model.uniqueId}\``, () =>
             this.pushAndLoadMapItems(model, {
-              newItems,
+              newItems: newItemBuckets[i],
               itemErrors,
               modelErrors,
               errors
             })
-          );
-        } else {
-          break;
-        }
-      }
+          )
+        )
+      );
+      newItems.push(...newItemBuckets.flat());
 
       newItems.forEach((item) => {
         applyPart(`workbench analytics for \`${item.uniqueId}\``, () => {

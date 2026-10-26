@@ -4,14 +4,22 @@
 
 - **Breaking changes:**
   - Removed option `uiMode` from `MapInteractionMode`. This was mostly only used internally for difftool.
+  - A group on the workbench now contributes its nested-group members and its reference members, not just its direct mappable members. `Terria.pushAndLoadMapItems` previously started member loads without awaiting them, so anything pushed after an `await` — members of nested groups, and the targets of `ReferenceMixin` members — was pushed only after the workbench had already been assigned and was silently dropped; direct members were pushed in time but their `loadMapItems()` was never waited on. Applying init data now blocks until a workbench group's members have loaded.
 
 - Migrate to pnpm
+- Added the experimental `nextExperimentalFeatures.progressiveLoading` config parameter (default `false`) for showing the map before everything has loaded, and the `Terria#progressiveLoading`, `Terria#isProgressivelyLoading` and `Terria#preloadedWorldTerrain` getters. When it's on:
+  - `Terria#start` loads the language files and the server config in parallel instead of one after the other.
+  - `Terria#start` starts loading Cesium world terrain as soon as the config asks for it, and the globe is held back until the initial terrain is ready. Previously it drew on flat terrain and swapped terrain in, which discarded every tile and made the globe vanish for a moment.
+  - An init source's `initialCamera` applied while restoring app state is jumped to instead of flown to, so a map that's already on screen doesn't animate from the home view (and a story starting straight away no longer cancels that flight).
+  - The bare globe is a muted ocean colour instead of solid blue while the base map loads.
+  - The data catalogue, and the workbench in place of its "Add a dataset here" tips, show a loading indicator while they're still empty because app state is being restored or init sources are loading, instead of briefly showing empty states.
 - Fixed the `<feedbacklink>` custom component rendering a literal `{{email}}` in error messages. An `email-message` override now has its `{{email}}` placeholder replaced with the support email address, instead of always having the address appended.
 - Added `storyAutoStart` config parameter (default `false`). Set it to `true` to start playing a story as soon as a map containing one loads, instead of asking the user whether they want to view it. A share link that contains a story records the value in effect when it was created (as `settings.storyAutoStart`), so it keeps opening the same way if the map's configuration changes later. Because an auto-starting story sets the camera from its first scene, the current view is left out of share links that contain a story.
 - The `playStory` hash parameter now overrides `storyAutoStart` and shares its code path. It previously relied on a MobX reaction that never fired if the parameter was already set before `ViewState` was constructed, so `#playStory=1` did nothing in applications that create their `ViewState` after `Terria#start`.
 - Fixed share links dropping the `=` from the hash parameters they carry over from the current URL (e.g. creating a share while `#playStory=1` was set produced `#playStory%3D1&share=…`). The map read the mangled parameter as the name of an init file and failed to load it.
 - Share links (and other init sources) are now resilient to a single broken part: applying init data no longer aborts when one model has invalid traits, a model has a `dereferenced` block but cannot be dereferenced, or `initialCamera`/`homeCamera` are invalid. Every part of the init data that can be applied is applied - including individual workbench items, so the layers that load are added to the workbench even if others fail - and the failures are still reported to the user as a combined error. [#5168](https://github.com/TerriaJS/terriajs/issues/5168)
 - Non-blocking load errors are now shown on the workbench item instead of as a modal. A workbench item with errors shows a warning icon (with a count when there is more than one), which opens a dropdown with the error details. This applies to items loaded from share links and story scenes, items added from the catalog, and imagery layers that are disabled after too many tile errors (the error is cleared when the layer is shown again). Items that can't be loaded at all - for example because their type is no longer registered - are now added to the workbench with their errors instead of being dropped. Base maps, and errors that can't be attached to a workbench item, are still raised as before.
+- Fixed a share link with `storyAutoStart` still raising a modal (e.g. "A network request error occurred") for a broken workbench item. The chart panel reloads workbench items and raised their errors once loaded; a story scene that replaced the workbench meanwhile had cleared the errors shown on the item, so the chart panel no longer raises errors for items that have left the workbench.
 - Errors from activating a story scene that can't be shown on a workbench item (e.g. an invalid camera) are now shown as a non-blocking toast with a link to the full error, instead of as a modal. Added `Terria.raiseErrorToUserAsToast` and `TerriaError.toToastNotification`.
 - Load errors when previewing a dataset in the catalog are now only shown in the preview panel, instead of also being raised as a modal. Stacked warnings in the preview panel are now spaced apart, and a warning's title is no longer a larger heading than its message.
 - Imagery layers in the workbench are no longer switched off when their tiles keep failing with a 4xx status (e.g. S3 returning 403 for missing keys). The first error is shown on the workbench item and the layer stays visible. Base maps, items outside the workbench, 5xx errors and errors without a status code still disable the layer. Set `nextExperimentalFeatures.keepLayersOnMissingTiles` to `false` to restore the previous behaviour.
@@ -36,6 +44,12 @@
 - The distance legend (scale bar) no longer recalculates on every rendered frame in the 3D view. It skips frames where the camera and canvas size are unchanged and otherwise updates at most every 200ms, so panning and zooming no longer run two globe picks, a MobX action and a React re-render per frame.
 - Fix label background color for leaflet map. Previously label background color was being ignored.
 - Upgrade Cesium to 1.145
+- Fixed story scenes and share links failing a model with `Could not create unknown model type .` when one of its `knownContainerUniqueIds` was not saved in the init data and can't be found in the catalog (e.g. a transient search results group). Such containers are now skipped instead of being created as a stub, which also broke later scenes that did save the container.
+- Fixed a time-varying layer staying on the timeline after it was removed from the workbench while the catalogue was still adding it. The catalogue now only adds an item to the timeline if it is still on the workbench once it has loaded, and no longer adds an item that failed to be added to the workbench.
+- The "Shadows disabled" toast now closes when its "Display settings" link is clicked to open the settings panel. Other `<settingspanel>` links are unchanged.
+- Workbench items from an init source or share link now load concurrently instead of one at a time, so applying init data takes about as long as the slowest item rather than the sum of every item.
+- Fixed the timeline needle sometimes disappearing after a story scene (or any change of the top time-series layer) switched to a layer with a different time range. The timeline zoomed to the new layer's range before the clock had been moved to it, so it was clamped to the previous layer's range and the needle was drawn off-screen. Added `TimelineStack#clockRange`, the range last applied to the clock, which the timeline now follows.
+- Fixed CZML layers taking over the timeline clock in 3D. The Cesium widget copied each newly added data source's clock over the one `TimelineStack` had set, and the next clock tick then saved those values on the top layer. Switching story scenes while the timeline was playing could give a layer another layer's time range: its timeline disappeared (start after stop), or it showed nothing and couldn't be zoomed to. Terria now creates the widget with `automaticallyTrackDataSourceClocks: false`; each CZML item already applies its own clock through the timeline.
 - [The next improvement]
 
 #### 8.13.0 - 2026-09-11
@@ -121,6 +135,7 @@
 - Update prettier to v3.
   - When merging the changes make sure to use pre-prettier-v3 and post-prettier-v3 tags to make merging easier. You can follow the guide for prettier v2 update https://github.com/TerriaJS/terriajs/discussions/6517.
 - Test environment modernization:
+
   - Refactor tests to use @testing-library/react instead of react-test-renderer and react-shallow-testutils, and remove deprecated libraries.(#7755, #7763)
   - Replace jasmine-ajax and fetch-mock with `msw` for mocking API requests in tests. (#7766, #7767, #7795, #7796, #7797, #7801)
   - Replace karma test runner with jasmine-browser-runner and upgrade jasmine to v6. (#7807)
@@ -180,6 +195,7 @@
 #### 8.11.0 - 2025-10-09
 
 - **Breaking changes:**
+
   - Replace unmaintained `svg-sprite-loader` with custom implementation of SvgSprite plugin based on `svg-sprite` package.
     - New implementation consists of svg sprite loader that loads svgs and svg webpack plugin that compiles them into a single sprite file.
 
@@ -203,6 +219,7 @@
 #### 8.10.0 - 2025-07-08
 
 - **Breaking changes:**
+
   - Update `protomaps-leafet` package to 5.0.1 which only support protomaps basempap tileset >v4.0
     - See [protomaps leaflet CHANGELOG](https://github.com/protomaps/protomaps-leaflet/blob/main/CHANGELOG.md#500).
   - Update react and react-dom to version 18
@@ -280,6 +297,7 @@
 
 - **Breaking changes:**
 - Major changes to UI
+
   - Changed workbench and bottom dock to absolute positioned over map with transparent background
   - Generally increase padding and font sizes to improve readability
   - Generally use a darker default theme
@@ -394,6 +412,7 @@
 #### 8.7.7 - 2024-10-01
 
 - **Breaking changes:**
+
   - Remove RollbarErrorServiceProvder
   - Error services now instantiated externally to terriajs
 

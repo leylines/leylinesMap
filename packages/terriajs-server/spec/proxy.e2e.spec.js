@@ -5,8 +5,9 @@ import { createTestServer } from "./support/test-http-server.js";
 import { createProxyServer } from "./support/http-proxy-server.js";
 
 // Test server ports
-const TEST_SERVER_PORT = 9876;
-const TEST_SERVER_2_PORT = 9877;
+// Not 9876: terriajs' jasmine-browser-runner (`gulp test`/`gulp dev`) listens there.
+const TEST_SERVER_PORT = 19876;
+const TEST_SERVER_2_PORT = 19877;
 
 async function buildApp(settings = {}, proxyAuth = {}) {
   const app = makeServer({
@@ -396,9 +397,9 @@ function doCommonTest(methodName) {
       const appHttpServer = app.listen(0);
 
       await supertestReq(app)
-        [
-          methodName
-        ](`/proxy/http://127.0.0.1:${appHttpServer.address().port}/ping`)
+        [methodName](
+          `/proxy/http://127.0.0.1:${appHttpServer.address().port}/ping`
+        )
         .expect(200, "OK");
       expect(connectSpy).toHaveBeenCalledTimes(1);
 
@@ -416,9 +417,9 @@ function doCommonTest(methodName) {
       const appHttpServer = app.listen(64900);
 
       await supertestReq(app)
-        [
-          methodName
-        ](`/proxy/http://127.0.0.1:${appHttpServer.address().port}/ping`)
+        [methodName](
+          `/proxy/http://127.0.0.1:${appHttpServer.address().port}/ping`
+        )
         .expect(200, "OK");
       expect(connectSpy).not.toHaveBeenCalled();
 
@@ -435,9 +436,9 @@ function doCommonTest(methodName) {
       const appHttpServer = app.listen(64901);
 
       await supertestReq(app)
-        [
-          methodName
-        ](`/proxy/http://127.0.0.1:${appHttpServer.address().port}/ping`)
+        [methodName](
+          `/proxy/http://127.0.0.1:${appHttpServer.address().port}/ping`
+        )
         .expect(200, "OK");
       expect(connectSpy).toHaveBeenCalledTimes(1);
 
@@ -915,9 +916,9 @@ function doCommonTest(methodName) {
         });
 
         const response = await supertestReq(app)
-          [
-            methodName
-          ](`/proxy/localhost:${TEST_SERVER_PORT}/cache-auth-fallback`)
+          [methodName](
+            `/proxy/localhost:${TEST_SERVER_PORT}/cache-auth-fallback`
+          )
           .set("Authorization", "Bearer bad-token")
           .expect(200)
           .expect("Cache-Control", "public,max-age=1209600");
@@ -1286,15 +1287,15 @@ function doCommonTest(methodName) {
       });
 
       await supertestReq(app)
-        [
-          methodName
-        ](`/proxy/localhost:${TEST_SERVER_PORT}/something?already=here`)
+        [methodName](
+          `/proxy/localhost:${TEST_SERVER_PORT}/something?already=here`
+        )
         .expect(200, {
           data: "have extended search params with foo=bar"
         });
     });
 
-    it('should not append "foo=bar" for "localhost:9876" when config is for "localhost:9877", preserving existing "already=here"', async () => {
+    it('should not append "foo=bar" for "localhost:19876" when config is for "localhost:19877", preserving existing "already=here"', async () => {
       testServer.addRoute(methodName, "/something", (req, res) => {
         // Verify only existing param is present (no "foo=bar" appended)
         if (req.query.already === "here" && !req.query.foo) {
@@ -1322,9 +1323,9 @@ function doCommonTest(methodName) {
       });
 
       await supertestReq(app)
-        [
-          methodName
-        ](`/proxy/localhost:${TEST_SERVER_PORT}/something?already=here`)
+        [methodName](
+          `/proxy/localhost:${TEST_SERVER_PORT}/something?already=here`
+        )
         .expect(200, {
           data: "haven\t set search params"
         });
@@ -1379,9 +1380,9 @@ function doCommonTest(methodName) {
       });
 
       const response = await supertestReq(app)
-        [
-          methodName
-        ](`/proxy/localhost:${TEST_SERVER_PORT}/redirect-to-blacklist`)
+        [methodName](
+          `/proxy/localhost:${TEST_SERVER_PORT}/redirect-to-blacklist`
+        )
         .expect(403);
       expect(response.text).toContain(
         "Host is not in list of allowed hosts: 202.168.1.1"
@@ -1407,9 +1408,9 @@ function doCommonTest(methodName) {
       });
 
       const response = await supertestReq(app)
-        [
-          methodName
-        ](`/proxy/localhost:${TEST_SERVER_PORT}/redirect-to-blacklist`)
+        [methodName](
+          `/proxy/localhost:${TEST_SERVER_PORT}/redirect-to-blacklist`
+        )
         .expect(403);
       expect(response.text).toContain(
         "Host is not in list of allowed hosts: localhost"
@@ -1469,9 +1470,9 @@ function doCommonTest(methodName) {
         });
 
         const response = await supertestReq(app)
-          [
-            methodName
-          ](`/proxy/localhost:${TEST_SERVER_PORT}/redirect-blacklisted-port`)
+          [methodName](
+            `/proxy/localhost:${TEST_SERVER_PORT}/redirect-blacklisted-port`
+          )
           .expect(403);
 
         expect(response.text).toMatch(/not allowed|not in list/i);

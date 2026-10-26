@@ -39,7 +39,6 @@ const Clipboard: FC<ClipboardProps> = (props) => {
 
   useEffect(() => {
     if (createdMessage && !prevTextRef.current && text && !failed) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShowCreatedMessage(true);
     }
     prevTextRef.current = text;
@@ -124,15 +123,19 @@ const Clipboard: FC<ClipboardProps> = (props) => {
                 margin: 5px;
                 margin-left: 0;
                 display: inline-block;
-                ${status !== CopyStatus.Error &&
-                `fill: ${styledTheme.textSuccess};`}
+                ${
+                  status !== CopyStatus.Error &&
+                  `fill: ${styledTheme.textSuccess};`
+                }
               `}
             />
             <TextSpan
               medium
               css={`
-                ${status !== CopyStatus.Error &&
-                `color: ${styledTheme.textSuccess};`}
+                ${
+                  status !== CopyStatus.Error &&
+                  `color: ${styledTheme.textSuccess};`
+                }
               `}
             >
               {statusMessage}
