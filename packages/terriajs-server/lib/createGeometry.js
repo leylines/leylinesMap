@@ -8,7 +8,7 @@ export function createPoints(points, color) {
 
   // Falls color ein Array ist [R, G, B, A], nutzen wir die ersten drei
   const icon = `/images/icons/button_${color[0]}-${color[1]}-${color[2]}.svg`;
-  const scale = 0.05;
+  const scale = 0.03;
 
   for (let i = 0; i < points.length; i++) {
     const pt = points[i];
@@ -24,6 +24,8 @@ export function createPoints(points, color) {
         z_coord: 1000
       },
       pt[3], // Beschreibung (hier einfach der Name)
+      false,
+      10,
       scale,
       icon
     );
