@@ -105,7 +105,7 @@ export async function createGrid(req, res, pool) {
 
   // 6. Datenbank-Suche (Der einzige asynchrone Teil)
   try {
-    if (pois !== "off" && type != "points") {
+    if (pois !== "off" && type !== "points") {
       const poiPackets = await postgis.pgFindPOI(
         pool,
         points,
