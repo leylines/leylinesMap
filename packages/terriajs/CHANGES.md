@@ -7,6 +7,8 @@
   - A group on the workbench now contributes its nested-group members and its reference members, not just its direct mappable members. `Terria.pushAndLoadMapItems` previously started member loads without awaiting them, so anything pushed after an `await` — members of nested groups, and the targets of `ReferenceMixin` members — was pushed only after the workbench had already been assigned and was silently dropped; direct members were pushed in time but their `loadMapItems()` was never waited on. Applying init data now blocks until a workbench group's members have loaded.
 
 - Migrate to pnpm
+- The workbench's per-item menu and its "Remove All" button can now be hidden with the `workbench-item-menu` and `workbench-remove-all` UI elements, the same way as any other map control. An application embedding the map in a flow of its own may not want layers removed or exported from the workbench. `workbench-item-menu` hides the "..." menu alone: "Zoom to" and "About data" stand in the same row but only read a layer, and are left where they are.
+- Hiding a menu bar control now removes its list item too, rather than leaving an empty one behind. The buttons in a menu bar group are rounded at the group's two ends, so the empty item squared off the outer edge of the button beside it — hiding `menu-bar-help` left the settings button rounded on its left alone.
 - Added the experimental `nextExperimentalFeatures.progressiveLoading` config parameter (default `false`) for showing the map before everything has loaded, and the `Terria#progressiveLoading`, `Terria#isProgressivelyLoading` and `Terria#preloadedWorldTerrain` getters. When it's on:
   - `Terria#start` loads the language files and the server config in parallel instead of one after the other.
   - `Terria#start` starts loading Cesium world terrain as soon as the config asks for it, and the globe is held back until the initial terrain is ready. Previously it drew on flat terrain and swapped terrain in, which discarded every tile and made the globe vanish for a moment.
@@ -61,6 +63,13 @@
 - The share panel now surfaces the real HTTP status of a failed share-link request (a data-too-large message for 413, otherwise a generic message that includes the status code) instead of string-matching `"413"` in the error text.
 - A failed share link now also raises an error notification, not just an inline message.
 - **Breaking:** `updateApplicationOnMessageFromParentWindow` now validates the `window.postMessage` sender's `event.origin` against an allowlist instead of trusting `window.parent`/`window.opener`. The application's own origin is always allowed; cross-origin pages that embed or open the app must be listed in the new `parentMessageAllowedOrigins` config parameter (empty by default) to send start data. The `event.data.allowOrigin` mechanism has been removed, and the `"ready"` message is now posted only to allowed origins rather than `"*"`. This prevents any page that frames or opens TerriaJS from injecting start data.
+
+- **Breaking:** Replace the mutable `Terria.configParameters` object with a Zod-validated, stratified configuration store.
+  - Configuration is resolved by priority from the `defaults`, `underride`, `definition`, `persistedStorage`, `override`, `url`, and `user` strata. Use `configParameters.update(stratum, values)` or `configParameters.setValue(stratum, key, value)` instead of assigning properties directly. Both accept partial values at every depth — a nested object stores only the fields it sets, and the rest resolve from the strata below on read (matching the trait/catalog layer's `objectTrait`).
+  - `config.json` parameters are validated before being applied. Every value that validates is applied; each unknown or invalid value is rejected individually - a bad leaf inside a nested object does not discard its siblings or the rest of the file - and the validation error is shown to the user.
+  - Applications can extend `ConfigParametersSchema` with application-specific options and pass a config created with `createTerriaConfig(extendedSchema)` through `TerriaOptions.config`.
+  - Built-in defaults now live in `CONFIG_DEFAULTS`, separately from the validation schema, so partial higher-priority strata do not inject defaults.
+  - Replace the trait-based `SearchBarTraits` configuration with `SearchBarConfigSchema`, and validate language configuration with `LanguageConfigurationSchema`.
 
 - Harden the custom markdown/HTML sanitizer: replaced the blanket `ALLOW_UNKNOWN_PROTOCOLS` DOMPurify option (which preserved OS/app-handler schemes such as `vscode:`, `ms-its:` and `slack:` on links and images) with a scoped `uponSanitizeAttribute` hook. The hook keeps custom components' free-text attributes verbatim (so values may contain `:`, e.g. a chart's `column-titles`) while scheme-validating their URL attributes per URL, closing a gap where a dangerous scheme could hide in a comma-separated `sources`/`downloads` list.
 - Upgrade terriajs-server to 5.0.0-alpha.4
@@ -136,7 +145,6 @@
 - Update prettier to v3.
   - When merging the changes make sure to use pre-prettier-v3 and post-prettier-v3 tags to make merging easier. You can follow the guide for prettier v2 update https://github.com/TerriaJS/terriajs/discussions/6517.
 - Test environment modernization:
-
   - Refactor tests to use @testing-library/react instead of react-test-renderer and react-shallow-testutils, and remove deprecated libraries.(#7755, #7763)
   - Replace jasmine-ajax and fetch-mock with `msw` for mocking API requests in tests. (#7766, #7767, #7795, #7796, #7797, #7801)
   - Replace karma test runner with jasmine-browser-runner and upgrade jasmine to v6. (#7807)
@@ -196,7 +204,6 @@
 #### 8.11.0 - 2025-10-09
 
 - **Breaking changes:**
-
   - Replace unmaintained `svg-sprite-loader` with custom implementation of SvgSprite plugin based on `svg-sprite` package.
     - New implementation consists of svg sprite loader that loads svgs and svg webpack plugin that compiles them into a single sprite file.
 
@@ -220,7 +227,6 @@
 #### 8.10.0 - 2025-07-08
 
 - **Breaking changes:**
-
   - Update `protomaps-leafet` package to 5.0.1 which only support protomaps basempap tileset >v4.0
     - See [protomaps leaflet CHANGELOG](https://github.com/protomaps/protomaps-leaflet/blob/main/CHANGELOG.md#500).
   - Update react and react-dom to version 18
@@ -298,7 +304,6 @@
 
 - **Breaking changes:**
 - Major changes to UI
-
   - Changed workbench and bottom dock to absolute positioned over map with transparent background
   - Generally increase padding and font sizes to improve readability
   - Generally use a darker default theme
@@ -413,7 +418,6 @@
 #### 8.7.7 - 2024-10-01
 
 - **Breaking changes:**
-
   - Remove RollbarErrorServiceProvder
   - Error services now instantiated externally to terriajs
 
