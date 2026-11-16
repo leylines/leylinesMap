@@ -62,7 +62,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile --filter . --filter "@terria/design-system*..."
 
-      - uses: chromaui/action@c93e0bc3a63aa176e14a75b61a31847cbfdd341c # v1
+      - uses: chromaui/action@6ac4c49524e1b1358b8c593c5eea877604228268 # v18.14.2
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           configFile: packages/design-system/chromatic.config.json
