@@ -8,6 +8,7 @@ import hashEntity from "../../../../Core/hashEntity";
 import isDefined from "../../../../Core/isDefined";
 import TerriaError from "../../../../Core/TerriaError";
 import ReferenceMixin from "../../../../ModelMixins/ReferenceMixin";
+import CatalogMemberFactory from "../../../../Models/Catalog/CatalogMemberFactory";
 import CommonStrata from "../../../../Models/Definition/CommonStrata";
 import { BaseModel } from "../../../../Models/Definition/Model";
 import saveStratumToJson from "../../../../Models/Definition/saveStratumToJson";
@@ -275,6 +276,9 @@ function addModelStratum(
   }
 
   models[id].type = model.type;
+  if (CatalogMemberFactory.isOptional(model.type)) {
+    models[id].isOptionalModel = true;
+  }
 }
 
 /**

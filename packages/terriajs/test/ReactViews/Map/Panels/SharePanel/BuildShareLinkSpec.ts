@@ -7,6 +7,7 @@ import URI from "urijs";
 import { USER_ADDED_CATEGORY_ID } from "../../../../../lib/Core/addedByUser";
 import PickedFeatures from "../../../../../lib/Map/PickedFeatures/PickedFeatures";
 import addUserCatalogMember from "../../../../../lib/Models/Catalog/addUserCatalogMember";
+import CatalogMemberFactory from "../../../../../lib/Models/Catalog/CatalogMemberFactory";
 import GeoJsonCatalogItem from "../../../../../lib/Models/Catalog/CatalogItems/GeoJsonCatalogItem";
 import WebMapServiceCatalogItem from "../../../../../lib/Models/Catalog/Ows/WebMapServiceCatalogItem";
 import CommonStrata from "../../../../../lib/Models/Definition/CommonStrata";
@@ -153,6 +154,47 @@ describe("BuildShareLink", function () {
       const initSources = flattenInitSources(params.initSources);
 
       expect(initSources.workbench).toContain(model.uniqueId);
+    });
+  });
+
+  describe("a model whose type is registered as optional", function () {
+    let model: BaseModel;
+
+    const sharedModelJson = () =>
+      flattenInitSources(
+        decodeAndParseStartHash(buildShareLink(terria, viewState)).initSources
+      ).models?.[model.uniqueId!];
+
+    beforeEach(function () {
+      model = new WebMapServiceCatalogItem("optional-test", terria);
+      model.setTrait(CommonStrata.user, "opacity", 0.5);
+      terria.addModel(model);
+    });
+
+    afterEach(function () {
+      CatalogMemberFactory.register(
+        WebMapServiceCatalogItem.type,
+        WebMapServiceCatalogItem
+      );
+    });
+
+    it("is saved with isOptionalModel", function () {
+      CatalogMemberFactory.register(
+        WebMapServiceCatalogItem.type,
+        WebMapServiceCatalogItem,
+        { optional: true }
+      );
+
+      expect(sharedModelJson()).toEqual(
+        jasmine.objectContaining({ isOptionalModel: true })
+      );
+    });
+
+    it("is saved without isOptionalModel when not optional", function () {
+      const json = sharedModelJson();
+
+      expect(json).toBeDefined();
+      expect(json?.isOptionalModel).toBeUndefined();
     });
   });
 

@@ -1,6 +1,7 @@
 import TerriaError from "../../lib/Core/TerriaError";
 import i18next from "i18next";
 import L from "leaflet";
+import retry from "retry";
 import RequestErrorEvent from "terriajs-cesium/Source/Core/RequestErrorEvent";
 import Resource from "terriajs-cesium/Source/Core/Resource";
 import TileProviderError from "terriajs-cesium/Source/Core/TileProviderError";
@@ -230,15 +231,37 @@ describe("TileErrorHandlerMixin", function () {
       expect(raiseEvent.calls.count()).toBe(0);
     });
 
-    it("otherwise, it fails with unknown error", async function () {
+    it("otherwise, it retries and then fails with unknown error", async function () {
+      const cause = new Error("The source image could not be decoded.");
+      spyOn(Resource, "fetchImage").and.rejectWith(cause);
       try {
         await onTileLoadError(item, newError(undefined));
       } catch {}
+      expect(Resource.fetchImage).toHaveBeenCalledTimes(3);
       expect(item.tileFailures).toBe(1);
       expect(raiseEvent.calls.count()).toBe(1);
       expect(raiseEvent.calls.argsFor(0)[0]?.message).toContain(
         i18next.t(($) => $.models.imageryLayer.unknownTileErrorMessage)
       );
+      expect(raiseEvent.calls.argsFor(0)[0]?.originalError).toEqual([cause]);
+    });
+
+    it("reports a failed request with no status code as the cause", async function () {
+      spyOn(Resource, "fetchImage").and.rejectWith(new RequestErrorEvent());
+      try {
+        await onTileLoadError(item, newError(undefined));
+      } catch {}
+      expect(raiseEvent.calls.argsFor(0)[0]?.originalError?.[0].message).toBe(
+        "Request has failed."
+      );
+    });
+
+    it("tells the map to reload the tile if a retry succeeds", async function () {
+      spyOn(Resource, "fetchImage").and.resolveTo();
+      await onTileLoadError(item, newError(undefined));
+      expect(Resource.fetchImage).toHaveBeenCalledTimes(1);
+      expect(item.tileFailures).toBe(0);
+      expect(raiseEvent.calls.count()).toBe(0);
     });
   });
 
@@ -276,6 +299,52 @@ describe("TileErrorHandlerMixin", function () {
       expect(item.tileFailures).toEqual(1);
     });
 
+    it("retries as many times as tileErrorHandlingOptions.retries says", async function () {
+      item.tileErrorHandlingOptions.setTrait(CommonStrata.user, "retries", 1);
+      const error = newError(randomIntBetween(500, 599));
+      spyOn(Resource, "fetchImage").and.rejectWith(error.error);
+      try {
+        await onTileLoadError(item, error);
+      } catch {}
+      expect(Resource.fetchImage).toHaveBeenCalledTimes(1);
+      expect(item.tileFailures).toBe(1);
+    });
+
+    it("fails on the first attempt when retries is 0", async function () {
+      item.tileErrorHandlingOptions.setTrait(CommonStrata.user, "retries", 0);
+      const error = newError(undefined);
+      spyOn(Resource, "fetchImage").and.rejectWith(error.error);
+      try {
+        await onTileLoadError(item, error);
+      } catch {}
+      expect(Resource.fetchImage).not.toHaveBeenCalled();
+      expect(item.tileFailures).toBe(1);
+    });
+
+    it("waits between retries as the timeout options say", async function () {
+      item.tileRetryOptions = { retries: 3, randomize: false };
+      item.tileErrorHandlingOptions.setTrait(
+        CommonStrata.user,
+        "retryMinTimeout",
+        100
+      );
+      item.tileErrorHandlingOptions.setTrait(
+        CommonStrata.user,
+        "retryMaxTimeout",
+        150
+      );
+      const createOperation = spyOn(retry, "operation").and.callThrough();
+      try {
+        await onTileLoadError(item, newError(400));
+      } catch {}
+      expect(createOperation.calls.argsFor(0)[0]).toEqual({
+        retries: 3,
+        randomize: false,
+        minTimeout: 100,
+        maxTimeout: 150
+      });
+    });
+
     it("gives up silently if the item is hidden", async function () {
       try {
         const error = newError(randomIntBetween(500, 599));
@@ -290,6 +359,7 @@ describe("TileErrorHandlerMixin", function () {
 
   describe("when a tile fails more than the threshold number of times", function () {
     beforeEach(function () {
+      spyOn(Resource, "fetchImage").and.rejectWith(new RequestErrorEvent());
       item.tileErrorHandlingOptions.setTrait(
         CommonStrata.user,
         "thresholdBeforeDisablingItem",
@@ -421,6 +491,7 @@ describe("TileErrorHandlerMixin", function () {
 
   it("resets tileFailures to 0 when there is an intervening success", async function () {
     const error = newError(undefined);
+    spyOn(Resource, "fetchImage").and.rejectWith(new RequestErrorEvent());
     expect(item.tileFailures).toBe(0);
 
     try {

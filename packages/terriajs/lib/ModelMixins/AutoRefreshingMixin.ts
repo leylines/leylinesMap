@@ -1,3 +1,4 @@
+import i18next from "i18next";
 import {
   computed,
   IReactionDisposer,
@@ -8,8 +9,10 @@ import {
 } from "mobx";
 import { now } from "mobx-utils";
 import AbstractConstructor from "../Core/AbstractConstructor";
+import TerriaError from "../Core/TerriaError";
 import Model from "../Models/Definition/Model";
 import AutoRefreshingTraits from "../Traits/TraitsClasses/AutoRefreshingTraits";
+import { getName } from "./CatalogMemberMixin";
 import MappableMixin from "./MappableMixin";
 
 type BaseType = Model<AutoRefreshingTraits> & MappableMixin.Instance;
@@ -20,12 +23,13 @@ export default function AutoRefreshingMixin<
   abstract class AutoRefreshingMixin extends Base {
     private autoRefreshDisposer: IReactionDisposer | undefined;
     private autorunRefreshEnableDisposer: IReactionDisposer | undefined;
+    private refreshError: TerriaError | undefined;
 
     /** Return the interval in seconds to poll for updates. */
     abstract get refreshInterval(): number | undefined;
 
-    /** Call hook for refreshing the item */
-    abstract refreshData(): void;
+    /** Call hook for refreshing the item. Return a promise so failures are reported. */
+    abstract refreshData(): void | Promise<void>;
 
     constructor(...args: any[]) {
       super(...args);
@@ -53,8 +57,51 @@ export default function AutoRefreshingMixin<
         this.autoRefreshDisposer = reaction(
           () => this._pollingTimer,
           () => {
-            if (this.show) this.refreshData();
+            if (this.show) this.refresh();
           }
+        );
+      }
+    }
+
+    private refresh() {
+      new Promise<void>((resolve) => resolve(this.refreshData())).then(
+        () => this.clearRefreshError(),
+        (e: unknown) => this.reportRefreshError(e)
+      );
+    }
+
+    /** Reports the first failure of a run, so a dead feed isn't reported every interval. */
+    private reportRefreshError(e: unknown) {
+      if (this.refreshError) return;
+      const error = TerriaError.from(e, {
+        title: i18next.t(($) => $.models.autoRefreshing.refreshErrorTitle),
+        message: i18next.t(($) => $.models.autoRefreshing.refreshErrorMessage, {
+          name: getName(this)
+        })
+      });
+      this.refreshError = error;
+      const workbench = this.terria.workbench;
+      const onWorkbench = workbench.contains(this);
+      if (onWorkbench) {
+        workbench.setItemErrors(this, [
+          ...workbench.getItemErrors(this),
+          error
+        ]);
+      }
+      this.terria.errorService.error(error, onWorkbench ? "workbench" : "none");
+      error.log();
+    }
+
+    private clearRefreshError() {
+      const error = this.refreshError;
+      if (!error) return;
+      this.refreshError = undefined;
+      const workbench = this.terria.workbench;
+      const errors = workbench.getItemErrors(this);
+      if (errors.includes(error)) {
+        workbench.setItemErrors(
+          this,
+          errors.filter((e) => e !== error)
         );
       }
     }

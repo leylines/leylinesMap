@@ -59,4 +59,32 @@ describe("activateStory", function () {
       true
     );
   });
+
+  it("plays a scene with a model from a plugin this map doesn't load", async function () {
+    await activateStory(
+      {
+        id: "scene",
+        title: "Scene",
+        text: "",
+        shareData: {
+          version: "8.0.0",
+          initSources: [
+            {
+              stratum: "user",
+              models: {
+                "plugin-state": {
+                  type: "not-a-registered-type",
+                  isOptionalModel: true,
+                  speed: 2
+                }
+              }
+            }
+          ]
+        }
+      },
+      terria
+    );
+
+    expect(terria.notificationState.currentNotification).toBeUndefined();
+  });
 });
